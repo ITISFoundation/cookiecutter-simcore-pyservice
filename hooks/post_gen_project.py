@@ -24,7 +24,10 @@ def get_file_content(file):
     get the content of a given file
     :param file: the file to get the content of
     """
-    return open(file, 'r').read()
+    content = ''
+    with open(file, 'r') as f:
+        content= f.read()
+    return content
 
 
 def set_file_content(file, content):
@@ -33,7 +36,11 @@ def set_file_content(file, content):
     :param file: the file to rewrite its content
     :param content: content to write to the given file
     """
-    return open(file, 'w').write(content)
+    nchar_written = 0
+    with open(file, 'w') as f:
+        nchar_written = f.write(content)
+    return nchar_written
+
 
 # format title of the generated readme file
 readme = os.getcwd() + '/README.md'
@@ -46,31 +53,3 @@ if (os.path.exists(readme)):
         )
     )
 # end format title of the generated readme file
-
-# issue #3 - copy post hook to project directory
-if (re.match(r'YES', '{{cookiecutter.copy_hooks}}', re.I)):
-    if (re.match(r'^cookiecutter\-', '{{cookiecutter.project_slug}}')):
-        hooksdir = os.getcwd() + '/hooks'
-        posthook = hooksdir + '/post_gen_project.py'
-        source = os.path.realpath(__file__)
-        replacements = [
-            {'project_slug': '{{cookiecutter.project_slug}}'},
-            {'copy_hooks': '{{cookiecutter.copy_hooks}}'},
-
-            # project_name must be set after project_slug to prevent side
-            # effects
-            {'project_name': '{{cookiecutter.project_name}}'}
-        ]
-
-        if (not os.path.exists(hooksdir)):
-            os.makedirs(hooksdir)
-        shutil.copyfile(source, posthook)
-
-        set_file_content(
-            posthook,
-            fix_template_expansion(
-                get_file_content(posthook), replacements
-            ) + "\n"
-        )
-# end issue #3
-
