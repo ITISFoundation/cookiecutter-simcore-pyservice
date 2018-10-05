@@ -64,7 +64,7 @@ _CONFIG = dict(
     },
     data_files = list_datafiles_at(
         "etc/",                                  # Contain the configuration files for all the programs that run on your system.
-        "{{coockiecutter.openapi_specs}}/"       # Root folder to openapi specifications
+        "{{cookiecutter.openapi_specs_basedir}}/"       # Root folder to openapi specifications
     ),
     entry_points={
         'console_scripts': [

@@ -6,7 +6,8 @@ SHELL = /bin/bash
 .SUFFIXES:
 
 # Python virtual environment
-VENV_DIR = $(CURDIR)/env
+VENV_DIR = $(CURDIR)/venv
+OUTPUT_DIR = $(CURDIR)/output
 
 
 .PHONY: clean
@@ -18,24 +19,34 @@ clean:
 		"$(CURDIR)/.cache" \
 		"$(CURDIR)/.mypy_cache" \
 		"$(CURDIR)/.pytest_cache"	
-
+	@rm -rf "$(VENV_DIR)"
 
 .PHONY: install
 install:
 	. "$(VENV_DIR)/bin/activate" && pip install -r requirements-dev.txt
 
 
+
+$(OUTPUT_DIR):
+	@mkdir -p $(OUTPUT_DIR)
+	. "$(VENV_DIR)/bin/activate" && cookiecutter "$(CURDIR)" --output-dir "$(OUTPUT_DIR)"
+
+.PHONY: run
+# target: run - Runs cookiecutter into output folder
+run: $(OUTPUT_DIR)
+
 .PHONE: test
 test:
 	pytest
 
 
+
 $(VENV_DIR):
-	@python3 -m venv "$(CURDIR)/env"
-	@"$(CURDIR)/env/bin/pip3" install --upgrade pip wheel setuptools
-	@"$(CURDIR)/env/bin/pip3" install pylint
+	@python3 -m venv "$(VENV_DIR)"
+	@"$(VENV_DIR)/bin/pip3" install --upgrade pip wheel setuptools
+	@"$(VENV_DIR)/bin/pip3" install pylint
 	@echo "To activate the virtual environment, execute 'source env/bin/activate'"
 
-.PHONY: env
-# target: env – Create the virtual environment
+.PHONY: venv
+# target: env – Create the virtual environment into venv folder
 venv: $(VENV_DIR)

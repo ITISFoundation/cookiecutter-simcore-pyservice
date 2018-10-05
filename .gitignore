@@ -102,3 +102,17 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+.DS_Store
+*~
+.*.sw[po]
+.build
+.cache
+.pytest
+.bootstrap
+.appveyor.token
+*.bak
+
+build/
+output/
+out/

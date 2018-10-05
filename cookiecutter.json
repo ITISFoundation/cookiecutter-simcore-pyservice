@@ -6,7 +6,7 @@
     "project_short_description": "A short description of the project",
     "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
     "package_name": "{{ cookiecutter.project_name|lower|replace(' ','_')|replace('-','_') }}",
-    "distribution_name": "simcore-service-{{ project_slug }}",
+    "distribution_name": "simcore-service-{{ cookiecutter.project_slug }}",
     "repo_name": "{{ cookiecutter.distribution_name }}",
     "simcore_install_root": ["../../", "git+https://github.com/ITISFoundation/osparc-simcore.git@master"],
     "openapi_specs_version": "v1",
