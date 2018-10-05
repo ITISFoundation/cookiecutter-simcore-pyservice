@@ -7,6 +7,8 @@
     "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
     "package_name": "{{ cookiecutter.project_name|lower|replace(' ','_')|replace('-','_') }}",
     "distribution_name": "{{ cookiecutter.package_name|replace('_','-') }}",
+    "repo_name": "{{ cookiecutter.distribution_name }}",
+    "command_line_interface_bin_name": "{{ cookiecutter.distribution_name }}",
     "release_date": "{% now 'local' %}",
     "version": "0.1.0",
     "_extensions": ["jinja2_time.TimeExtension"]
