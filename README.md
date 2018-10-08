@@ -15,7 +15,7 @@ Install `cookiecutter` command line: `pip install cookiecutter`
 
 Usage
 -----
-Generate a new Cookiecutter template layout: `cookiecutter gh:pcrespov/cookiecutter-simcore-pyservice`    
+Generate a new Cookiecutter template layout: `cookiecutter gh:itisfoundation/cookiecutter-simcore-pyservice`    
 
 License
 -------
