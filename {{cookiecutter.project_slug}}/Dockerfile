@@ -1,7 +1,7 @@
 # TODO: this is still not finished!!
 FROM python:3.6-alpine as base
 
-LABEL maintainer=pcrespov
+LABEL maintainer={{ cookiecutter.github_username }}
 
 #  USAGE:
 #     cd sercices/web
@@ -19,8 +19,6 @@ RUN apk add --no-cache \
 
 ENV HOME /home/scu
 ENV PIP  /home/scu/.venv/bin/pip3
-ENV SIMCORE_WEB_OUTDIR $HOME/services/web/client
-ENV IS_CONTAINER_CONTEXT Yes
 
 EXPOSE 8080
 
@@ -57,8 +55,8 @@ RUN python3 -m venv $HOME/.venv &&\
 WORKDIR /home/scu
 
 # install base 3rd party packages to accelerate runtime installs
-COPY --chown=scu:scu services/web/server/requirements/base.txt requirements-base.txt
-COPY --chown=scu:scu services/web/server/docker docker
+COPY --chown=scu:scu services/web/{{ cookiecutter.project_slug }}/requirements/base.txt requirements-base.txt
+COPY --chown=scu:scu services/web/{{ cookiecutter.project_slug }}/docker docker
 RUN $PIP install --no-cache-dir -r requirements-base.txt
 
 # --------------------------Development stage -------------------
@@ -67,7 +65,7 @@ FROM build as development
 ARG HOST_GID_ARG=1000
 
 # install test 3rd party packages to accelerate runtime installs
-COPY --chown=scu:scu services/web/server/requirements/tests.txt requirements-tests.txt
+COPY --chown=scu:scu services/web/{{ cookiecutter.project_slug }}/requirements/tests.txt requirements-tests.txt
 RUN $PIP install --no-cache-dir -r requirements-tests.txt
 
 # in dev mode we give access to `scu` to host's mapped volumes
@@ -76,10 +74,8 @@ RUN addgroup -g $HOST_GID_ARG hgrp &&\
     chown -R scu:scu $HOME/.venv
 
 VOLUME /home/scu/packages
-VOLUME /home/scu/services/web/server/
-VOLUME /home/scu/services/web/client/
+VOLUME /home/scu/services/web/{{ cookiecutter.project_slug }}/
 
-ENV SIMCORE_WEB_CONFIG development
 ENV DEBUG 1
 ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
 CMD docker/boot.sh
@@ -93,12 +89,10 @@ ENV SIMCORE_WEB_CONFIG production
 
 # 2nd party packages
 COPY --chown=scu:scu packages $HOME/packages
-# client
-COPY --from=services_webclient:build --chown=scu:scu /home/scu/client/build-output $HOME/services/web/client
 # server
-COPY --chown=scu:scu services/web/server $HOME/services/web/server
+COPY --chown=scu:scu services/web/{{ cookiecutter.project_slug }} $HOME/services/web/{{ cookiecutter.project_slug }}
 
-WORKDIR /home/scu/services/web/server
+WORKDIR /home/scu/services/web/{{ cookiecutter.project_slug }}
 RUN $PIP --no-cache-dir install -r requirements/prod.txt &&\
     $PIP list
 
@@ -115,7 +109,7 @@ WORKDIR /home/scu
 
 RUN . $HOME/.venv/bin/activate; pip list &&\
     rm -rf $HOME/packages &&\
-    rm -rf $HOME/services/web/server
+    rm -rf $HOME/services/web/{{ cookiecutter.project_slug }}
 
 ENV DEBUG 0
 ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
