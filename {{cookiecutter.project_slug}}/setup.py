@@ -1,35 +1,36 @@
-from pathlib import Path
-import sys
+import io
 import re
+import sys
+from fnmatch import fnmatch
+from itertools import chain
 from os import walk
 from os.path import join
-import io
-from itertools import chain
-from fnmatch import fnmatch
-from setuptools import ( find_packages,
-                         setup )
+from pathlib import Path
+
+from setuptools import find_packages, setup
 
 _CDIR = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
 
-
-def _listdir(root, wildcard='*'):
-    """ Recursively list all files under 'root' whose names fit a given wildcard.
-
-    Returns (dirname, files) pair per level. 
-    See https://docs.python.org/2/distutils/setupscript.html#installing-additional-files
-    """
-    for dirname, _, names in walk(root):
-        yield dirname, tuple(join(dirname, name) for name in names if fnmatch(name, wildcard))
-    return
+if sys.version_info<(3, 6):
+    raise RuntimeError("Requires >=3.6, got %s" % sys.version_info)
 
 def list_datafiles_at(*locations):
+    def _listdir(root, wildcard='*'):
+        """ Recursively list all files under 'root' whose names fit a given wildcard.
+
+        Returns (dirname, files) pair per level. 
+        See https://docs.python.org/2/distutils/setupscript.html#installing-additional-files
+        """
+        for dirname, _, names in walk(root):
+            yield dirname, tuple(join(dirname, name) for name in names if fnmatch(name, wildcard))
+
     return list(chain.from_iterable(_listdir(root) for root in locations))
 
 def read(*names, **kwargs):
     with io.open(join(_CDIR, *names), encoding=kwargs.get('encoding', 'utf8')) as f:
         return f.read()
 
-def list_packages(*parts, wildcard='*'):
+def list_packages(*parts):
     pkg_names = []
     COMMENT = re.compile(r'^\s*#')
     with io.open(join(_CDIR, *parts)) as f:
@@ -60,11 +61,11 @@ _CONFIG = dict(
     package_data={
         '': [
             'schema/*.json',
-        ],
+            'openapi/*.yaml',
+            ],
     },
     data_files = list_datafiles_at(
-        "etc/",                                  # Contain the configuration files for all the programs that run on your system.
-        "{{cookiecutter.openapi_specs_basedir}}/"# Root folder to openapi specifications
+        "etc/", # Contain the configuration files for all the programs that run on your system.
     ),
     entry_points={
         'console_scripts': [
@@ -79,6 +80,7 @@ def main():
 
     """
     setup(**_CONFIG)
+    return 0 # syccessful termination
 
 if __name__ == "__main__":
     raise SystemExit(main())
