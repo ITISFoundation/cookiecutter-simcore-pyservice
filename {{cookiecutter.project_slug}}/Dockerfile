@@ -4,14 +4,13 @@ FROM python:3.6-alpine as base
 LABEL maintainer={{ cookiecutter.github_username }}
 
 #  USAGE:
-#     cd sercices/web
-#     docker build -f Dockerfile -t web:prod --target production ../../
-#     docker run web:ci
+#     cd sercices/{{ cookiecutter.project_slug }}
+#     docker build -f Dockerfile -t {{ cookiecutter.project_slug }}:prod --target production ../../
+#     docker run {{ cookiecutter.project_slug }}:prod
 #
 #  REQUIRED: context expected at ``osparc-simcore/`` folder because we need access to osparc-simcore/packages
-#  REQUIRED: client_qx:build image ready
 
-# create user 'scu'
+# non-root user 'scu'
 RUN adduser -D -u 8004 scu
 
 RUN apk add --no-cache \

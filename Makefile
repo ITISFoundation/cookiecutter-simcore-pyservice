@@ -28,7 +28,7 @@ install:
 
 $(OUTPUT_DIR):
 	@mkdir -p $(OUTPUT_DIR)
-	. "$(VENV_DIR)/bin/activate" && cookiecutter "$(CURDIR)" --output-dir "$(OUTPUT_DIR)"
+	. "$(VENV_DIR)/bin/activate" && cookiecutter "$(CURDIR)" --config-file=".cookiecutterrc-ignore" --output-dir "$(OUTPUT_DIR)"
 
 .PHONY: run
 # target: run - Runs cookiecutter into output folder

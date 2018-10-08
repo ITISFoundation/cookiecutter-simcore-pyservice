@@ -116,3 +116,5 @@ venv.bak/
 build/
 output/
 out/
+
+*ignore*

@@ -5,21 +5,19 @@ stages of the development workflow. This submodule gives access
 to all of them.
 
 """
-from simcore_servicelib.resources import Resources
+import logging
 
 from .__version__ import get_version_object
 
-resources = Resources(__name__, config_folder='etc/{{ cookiecutter.package_name }}')
+log = logging.getLogger(__name__)
 
 ## Constants: low-level tweals ...
 TIMEOUT_IN_SECS = 2
-
+RESOURCE_KEY_OPENAPI = "oas3/{{ cookiecutter.openapi_specs_version }}"
 
 ## Settings revealed at build/installation time: only known after some setup or build step is completed
 PACKAGE_VERSION = get_version_object()
-OPENAPI_SPECS = resources.get_path(resources.RESOURCE_KEY_OPENAPI)
 
 
 ## Settings revealed at runtime: only known when the application starts 
 #  - via the config file passed to the cli
-
