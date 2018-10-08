@@ -1,0 +1,8 @@
+
+# paths relative to location of setup.py
+.
+./client-sdk
+
+{{ cookiecutter.simcore_install_root }}/packages/s3wrapper/
+{{ cookiecutter.simcore_install_root }}/packages/simcore-sdk/
+{{ cookiecutter.simcore_install_root }}/packages/director-sdk/python
