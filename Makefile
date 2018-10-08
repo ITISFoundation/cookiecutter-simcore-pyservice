@@ -8,7 +8,7 @@ SHELL = /bin/bash
 # Python virtual environment
 VENV_DIR = $(CURDIR)/venv
 OUTPUT_DIR = $(CURDIR)/output
-
+TEMPLATE = $(CURDIR)
 
 .PHONY: clean
 clean:
@@ -20,19 +20,25 @@ clean:
 		"$(CURDIR)/.mypy_cache" \
 		"$(CURDIR)/.pytest_cache"	
 	@rm -rf "$(VENV_DIR)"
+	@rm -rf "$(OUTPUT_DIR)"
 
 .PHONY: install
-install:
+install: venv
 	. "$(VENV_DIR)/bin/activate" && pip install -r requirements-dev.txt
 
 
 $(OUTPUT_DIR):
 	@mkdir -p $(OUTPUT_DIR)
-	. "$(VENV_DIR)/bin/activate" && cookiecutter "$(CURDIR)" --config-file=".cookiecutterrc-ignore" --output-dir "$(OUTPUT_DIR)"
+	. "$(VENV_DIR)/bin/activate" && cookiecutter --output-dir "$(OUTPUT_DIR)" "$(TEMPLATE)" 
+
 
 .PHONY: run
 # target: run - Runs cookiecutter into output folder
 run: $(OUTPUT_DIR)
+
+.PHONY: replay
+replay:
+	. "$(VENV_DIR)/bin/activate" && cookiecutter --no-input -f --config-file=".cookiecutterrc-ignore"  --output-dir "$(OUTPUT_DIR)" "$(TEMPLATE)" 
 
 
 

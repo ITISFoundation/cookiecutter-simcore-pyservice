@@ -4,12 +4,13 @@
     "project_name": "Name of the project",
     "project_short_description": "A short description of the project",
     "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
-    "package_name": "simcore_service_{{ cookiecutter.project_slug|replace('-','_') }}",
+    "package_name": "simcore_service_{{ cookiecutter.project_slug|replace('-','_') }}",    
     "distribution_name": "simcore-service-{{ cookiecutter.project_slug }}",
     "command_line_interface_bin_name": "{{ cookiecutter.distribution_name }}",
     "simcore_install_root": ["../../", "git+https://github.com/ITISFoundation/osparc-simcore.git@master"],    
     "release_date": "{% now 'local' %}",
     "version": "0.1.0",
     "openapi_specs_version": "v{{ cookiecutter.version.split('.')[0] }}",
+    "sdk_package_name": "simcore_{{ cookiecutter.project_slug|replace('-','_') }}_sdk",
     "_extensions": ["jinja2_time.TimeExtension"]
 }
