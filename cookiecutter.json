@@ -1,18 +1,16 @@
 {
-    "full_name": "Your name",
-    "email": "Your address email (eq. you@example.com)",
+    "full_name": "Your name",    
     "github_username": "Your github username",
     "project_name": "Name of the project",
     "project_short_description": "A short description of the project",
     "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
     "package_name": "simcore_service_{{ cookiecutter.project_slug|replace('-','_') }}",
     "distribution_name": "simcore-service-{{ cookiecutter.project_slug }}",
-    "repo_name": "{{ cookiecutter.distribution_name }}",
-    "simcore_install_root": ["../../", "git+https://github.com/ITISFoundation/osparc-simcore.git@master"],
-    "openapi_specs_version": "v{{ cookiecutter.version.split('.')[0] }}",
-    "openapi_specs_basedir": "oas3/{{ cookiecutter.openapi_specs_version }}/openapi.yaml",
     "command_line_interface_bin_name": "{{ cookiecutter.distribution_name }}",
+    "simcore_install_root": ["../../", "git+https://github.com/ITISFoundation/osparc-simcore.git@master"],    
     "release_date": "{% now 'local' %}",
     "version": "0.1.0",
+    "openapi_specs_version": "v{{ cookiecutter.version.split('.')[0] }}",
+    "openapi_specs_basedir": "oas3/{{ cookiecutter.openapi_specs_version }}/openapi.yaml",
     "_extensions": ["jinja2_time.TimeExtension"]
 }

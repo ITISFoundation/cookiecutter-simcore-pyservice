@@ -8,13 +8,13 @@ then
   echo "DEBUG: User    :`id $(whoami)`"
   echo "DEBUG: Workdir :`pwd`"
 
-  cd $HOME/services/web/server
+  cd $HOME/services/{{ cookiecutter.project_slug }}
   pip install -r requirements/dev.txt
   pip list
 
   cd $HOME/  
-  {{ command_line_interface_bin_name }} --config config-dev.yaml
+  {{ cookiecutter.command_line_interface_bin_name }} --config config-dev.yaml
 else
   echo "Booting in production mode ..."
-  {{ command_line_interface_bin_name }} --config config-prod.yaml
+  {{ cookiecutter.command_line_interface_bin_name }} --config config-prod.yaml
 fi

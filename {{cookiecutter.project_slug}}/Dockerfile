@@ -26,10 +26,8 @@ EXPOSE 8080
 #
 # + /home/scu/              $HOME
 #    + packages
-#    + services/web/client         $SIMCORE_WEB_OUTDIR
-#       - index.html
 #        ...
-#    + services/web/server
+#    + services/{{ cookiecutter.project_slug }}
 #       + src
 #       + tests
 #
@@ -55,8 +53,8 @@ RUN python3 -m venv $HOME/.venv &&\
 WORKDIR /home/scu
 
 # install base 3rd party packages to accelerate runtime installs
-COPY --chown=scu:scu services/web/{{ cookiecutter.project_slug }}/requirements/base.txt requirements-base.txt
-COPY --chown=scu:scu services/web/{{ cookiecutter.project_slug }}/docker docker
+COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/requirements/base.txt requirements-base.txt
+COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/docker docker
 RUN $PIP install --no-cache-dir -r requirements-base.txt
 
 # --------------------------Development stage -------------------
@@ -65,7 +63,7 @@ FROM build as development
 ARG HOST_GID_ARG=1000
 
 # install test 3rd party packages to accelerate runtime installs
-COPY --chown=scu:scu services/web/{{ cookiecutter.project_slug }}/requirements/tests.txt requirements-tests.txt
+COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/requirements/tests.txt requirements-tests.txt
 RUN $PIP install --no-cache-dir -r requirements-tests.txt
 
 # in dev mode we give access to `scu` to host's mapped volumes
@@ -74,7 +72,7 @@ RUN addgroup -g $HOST_GID_ARG hgrp &&\
     chown -R scu:scu $HOME/.venv
 
 VOLUME /home/scu/packages
-VOLUME /home/scu/services/web/{{ cookiecutter.project_slug }}/
+VOLUME /home/scu/services/{{ cookiecutter.project_slug }}/
 
 ENV DEBUG 1
 ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
@@ -90,9 +88,9 @@ ENV SIMCORE_WEB_CONFIG production
 # 2nd party packages
 COPY --chown=scu:scu packages $HOME/packages
 # server
-COPY --chown=scu:scu services/web/{{ cookiecutter.project_slug }} $HOME/services/web/{{ cookiecutter.project_slug }}
+COPY --chown=scu:scu services/{{ cookiecutter.project_slug }} $HOME/services/{{ cookiecutter.project_slug }}
 
-WORKDIR /home/scu/services/web/{{ cookiecutter.project_slug }}
+WORKDIR /home/scu/services/{{ cookiecutter.project_slug }}
 RUN $PIP --no-cache-dir install -r requirements/prod.txt &&\
     $PIP list
 
@@ -100,7 +98,7 @@ RUN $PIP --no-cache-dir install -r requirements/prod.txt &&\
 #FROM base as production
 # TODO: PC some basic package missing
 
-#COPY --from=build-production --chown=scu:scu $HOME/services/web/server/boot.sh $HOME
+#COPY --from=build-production --chown=scu:scu $HOME/services/server/boot.sh $HOME
 #COPY --from=build-production --chown=scu:scu $HOME/.venv $HOME/.venv
 #RUN . $HOME/.venv/bin/activate; pip list
 
@@ -109,7 +107,7 @@ WORKDIR /home/scu
 
 RUN . $HOME/.venv/bin/activate; pip list &&\
     rm -rf $HOME/packages &&\
-    rm -rf $HOME/services/web/{{ cookiecutter.project_slug }}
+    rm -rf $HOME/services/{{ cookiecutter.project_slug }}
 
 ENV DEBUG 0
 ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
