@@ -18,9 +18,9 @@ servers:
       port:
         default: '8001'
       version:
-        default: 'v{{ cookiecutter.version.split(".")[0] }}'
+        default: '{{ cookiecutter.openapi_specs_version }}'
         enum:
-          - 'v{{ cookiecutter.version.split(".")[0]}}'
+          - '{{ cookiecutter.openapi_specs_version }}'
 tags:
 - name: admins
   description: Secured Admin-only calls
