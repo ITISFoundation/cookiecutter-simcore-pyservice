@@ -26,7 +26,6 @@ install:
 	. "$(VENV_DIR)/bin/activate" && pip install -r requirements-dev.txt
 
 
-
 $(OUTPUT_DIR):
 	@mkdir -p $(OUTPUT_DIR)
 	. "$(VENV_DIR)/bin/activate" && cookiecutter "$(CURDIR)" --output-dir "$(OUTPUT_DIR)"
@@ -34,6 +33,8 @@ $(OUTPUT_DIR):
 .PHONY: run
 # target: run - Runs cookiecutter into output folder
 run: $(OUTPUT_DIR)
+
+
 
 .PHONE: test
 test:

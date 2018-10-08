@@ -24,11 +24,12 @@ Package version is defined in the setup.py following the principle of single-sou
 import pkg_resources
 import semantic_version
 
-__version__ = "{{ cookiecutter.version }}-dev"
+# TODO: introduce metadata info from vcs
 
 try:
     # access metadata
     __version__ = pkg_resources.get_distribution('pip').version
+    assert __version__=="{{ cookiecutter.version }}"
 except TypeError as ee:
     import logging
     logging.debug(ee)

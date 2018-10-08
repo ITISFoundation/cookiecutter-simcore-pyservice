@@ -12,7 +12,6 @@ from setuptools import ( find_packages,
 _CDIR = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
 
 
-
 def _listdir(root, wildcard='*'):
     """ Recursively list all files under 'root' whose names fit a given wildcard.
 
@@ -40,6 +39,7 @@ def list_packages(*parts, wildcard='*'):
 #####################################################################################
 # NOTE see https://packaging.python.org/discussions/install-requires-vs-requirements/
 
+
 _CONFIG = dict(
     name='{{ cookiecutter.distribution_name }}',
     version='{{ cookiecutter.version }}',
@@ -64,7 +64,7 @@ _CONFIG = dict(
     },
     data_files = list_datafiles_at(
         "etc/",                                  # Contain the configuration files for all the programs that run on your system.
-        "{{cookiecutter.openapi_specs_basedir}}/"       # Root folder to openapi specifications
+        "{{cookiecutter.openapi_specs_basedir}}/"# Root folder to openapi specifications
     ),
     entry_points={
         'console_scripts': [
@@ -72,3 +72,13 @@ _CONFIG = dict(
         ],
     },
 )
+
+
+def main():
+    """ Execute the setup commands.
+
+    """
+    setup(**_CONFIG)
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -5,8 +5,11 @@ stages of the development workflow. This submodule gives access
 to all of them.
 
 """
+from simcore_servicelib.resources import Resources
+
 from .__version__ import get_version_object
-from .resources import resources
+
+resources = Resources(__name__, config_folder='etc/{{ cookie_cutter.package_name }}')
 
 ## Constants: low-level tweals ...
 TIMEOUT_IN_SECS = 2

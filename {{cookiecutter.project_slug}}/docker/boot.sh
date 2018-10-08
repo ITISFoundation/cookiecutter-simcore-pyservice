@@ -12,9 +12,9 @@ then
   pip install -r requirements/dev.txt
   pip list
 
-  cd $HOME/
-  simcore-service-webserver --config server-docker-dev.yaml
+  cd $HOME/  
+  {{ command_line_interface_bin_name }} --config config-dev.yaml
 else
   echo "Booting in production mode ..."
-  simcore-service-webserver --config server-docker-prod.yaml
+  {{ command_line_interface_bin_name }} --config config-prod.yaml
 fi
