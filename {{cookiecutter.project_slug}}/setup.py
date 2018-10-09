@@ -45,7 +45,7 @@ _CONFIG = dict(
     name='{{ cookiecutter.distribution_name }}',
     version='{{ cookiecutter.version }}',
     description={{ '{0!r}'.format(cookiecutter.project_short_description).lstrip('ub') }},
-    # FIXME: 'Pedro Crespo' (pcrespov) !!
+    # FIXME: 'Real Name' (github_name) !!
     author={{ '{0!r}'.format(cookiecutter.full_name).lstrip('ub')}},
     python_requires='>=3.6',
     packages=find_packages(where='src'),
