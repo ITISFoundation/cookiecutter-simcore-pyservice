@@ -60,13 +60,14 @@ def test_run_tests(cookies):
     result = cookies.bake(extra_context={'project_slug': 'dummy-project'})
     working_dir = str(result.project)
     commands = (
+        "ls -la .",
         "python3 -m venv venv",
+        "ls -l venv/bin/",
         "./venv/bin/pip install -r requirements/dev.txt",
         "./venv/bin/pytest",
     )
-    with inside_dir(str(result.project)):
+    with inside_dir(working_dir):
         for cmd in commands:
             log.info("Running '%s' ...", cmd)
             assert subprocess.check_call(cmd.split()) == 0
-            log.info( " ".join(os.listdir(working_dir + "/venv/bin")) )
             log.info("Done '%s' .", cmd)
