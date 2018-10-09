@@ -64,7 +64,9 @@ def test_run_tests(cookies):
         "venv/bin/pip install -r requirements/dev.txt",
         "venv/bin/pytest",
     )
-    for cmd in commands:
-        log.info("Running '%s' ...", cmd)
-        assert subprocess.check_call(cmd.split(), cwd=working_dir) == 0
-        log.info("Done '%s' .", cmd)
+    with inside_dir(str(result.project)):
+        for cmd in commands:
+            log.info("Running '%s' ...", cmd)
+            assert subprocess.check_call(cmd.split()) == 0
+            log.info( " ".join(os.listdir(working_dir)) )
+            log.info("Done '%s' .", cmd)
