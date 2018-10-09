@@ -30,9 +30,11 @@ def inside_dir(dirpath):
     """
     old_path = os.getcwd()
     try:
+        log.info("CWD now '%s'", dirpath)
         os.chdir(dirpath)
         yield
     finally:
+        log.info("CWD now '%s'", old_path)
         os.chdir(old_path)
 
 

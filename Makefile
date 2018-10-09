@@ -44,7 +44,7 @@ replay:
 
 .PHONE: test
 test: install
-	. "$(VENV_DIR)/bin/activate" && pytest -c $(CURDIR)/pytest.ini
+	. "$(VENV_DIR)/bin/activate" && pytest -s -c $(CURDIR)/pytest.ini
 
 
 
