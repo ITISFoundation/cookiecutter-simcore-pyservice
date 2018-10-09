@@ -20,6 +20,7 @@ servers:
       version:
         default: '{{ cookiecutter.openapi_specs_version }}'
         enum:
+          # TODO: add all possible versions and set latest as default
           - '{{ cookiecutter.openapi_specs_version }}'
 tags:
 - name: admins
@@ -49,3 +50,36 @@ paths:
             application/json:
               schema:
                 $ref: 'components/schemas/error.yaml#ErrorEnveloped'
+  /check/{action}:
+    get:
+      parameters:
+        - in: query
+          name: data
+          schema:
+            type: string
+        - in: path
+          name: action
+          schema:
+            type: string
+            default: 'echo'
+            enum: ['fail', 'echo']
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'components/schemas/fake.yaml#Fake'
+      responses:
+        '200':
+          description: Echoes response based on action
+          content:
+            application/json:
+              schema:
+                $ref: 'components/schemas/fake.yaml#FakeEnveloped'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: 'components/schemas/error.yaml#ErrorEnveloped'
+
+          
