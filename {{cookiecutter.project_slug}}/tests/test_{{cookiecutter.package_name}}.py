@@ -7,7 +7,8 @@ import pytest
 
 from {{ cookiecutter.package_name }}.cli import main
 
-def test_main(here): # pylint: disable=unused-variable    
+
+def test_main(here): # pylint: disable=unused-variable
     with pytest.raises(SystemExit) as excinfo:
         main("--help".split())
     

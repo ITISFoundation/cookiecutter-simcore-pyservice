@@ -4,11 +4,12 @@ import os
 import sys
 import pytest
 import subprocess
+import logging
 from contextlib import contextmanager
 
 from pathlib import Path
 
-
+log = logging.getLogger(__name__)
 
 @pytest.fixture
 def here():
@@ -53,3 +54,17 @@ def test_run_pylint(cookies, pylintrc):
     with inside_dir(str(result.project)):
         cmd = 'pylint --rcfile {} -v src/package_folder/'.format(pylintrc.absolute()).split()
         assert subprocess.check_call(cmd) == 0
+
+
+def test_run_tests(cookies):
+    result = cookies.bake(extra_context={'project_slug': 'dummy-project'})
+    working_dir = str(result.project)
+    commands = (
+        "python3 -m venv venv",
+        "venv/bin/pip3 install -r requirements/dev.txt",
+        "venv/bin/pytest",
+    )
+    for cmd in commands:
+        log.info("Running '%s' ...", cmd)
+        assert subprocess.check_call(cmd.split(), cwd=working_dir) == 0
+        log.info("Done '%s' .", cmd)

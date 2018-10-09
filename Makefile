@@ -44,7 +44,7 @@ replay:
 
 .PHONE: test
 test:
-	pytest
+	pytest -c $(CURDIR)/pytest.ini
 
 
 
