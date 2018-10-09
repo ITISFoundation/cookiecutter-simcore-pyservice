@@ -68,5 +68,5 @@ def test_run_tests(cookies):
         for cmd in commands:
             log.info("Running '%s' ...", cmd)
             assert subprocess.check_call(cmd.split()) == 0
-            log.info( " ".join(os.listdir(working_dir + "venv/bin")) )
+            log.info( " ".join(os.listdir(working_dir + "/venv/bin")) )
             log.info("Done '%s' .", cmd)
