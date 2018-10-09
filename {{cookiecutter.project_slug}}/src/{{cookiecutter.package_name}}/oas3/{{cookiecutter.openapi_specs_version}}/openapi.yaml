@@ -25,8 +25,8 @@ servers:
 tags:
 - name: admins
   description: Secured Admin-only calls
-- name: developers
-  description: Operations available to regular developers
+- name: tests
+  description: Operations available for testing
 - name: users
   description: Operations available to regular users
 paths:
@@ -52,6 +52,9 @@ paths:
                 $ref: 'components/schemas/error.yaml#ErrorEnveloped'
   /check/{action}:
     get:
+      tags:
+        - tests
+      summary: Test checkpoint to ask server to fail or echo back the transmitted data
       parameters:
         - in: query
           name: data

@@ -11,7 +11,7 @@ from setuptools import find_packages, setup
 
 _CDIR = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
 
-if sys.version_info<(3, 6):
+if sys.version_info < (3, 6):
     raise RuntimeError("Requires >=3.6, got %s. Did you forget to activate virtualenv?" % sys.version_info)
 
 def list_datafiles_at(*locations):
