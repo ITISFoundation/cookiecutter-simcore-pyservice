@@ -61,10 +61,12 @@ def test_run_tests(cookies):
     working_dir = str(result.project)
     commands = (
         "ls -la .",
-        "python3 -m venv venv",
-        "ls -l venv/bin/",
-        "./venv/bin/pip install -r requirements/dev.txt",
-        "./venv/bin/pytest",
+        #"python3 -m venv venv",
+        #"ls -l venv/bin/",
+        #"./venv/bin/pip install -r requirements/dev.txt",
+        #"./venv/bin/pytest",
+        "pip install -r requirements/dev.txt",
+        "pytest"
     )
     with inside_dir(working_dir):
         for cmd in commands:
