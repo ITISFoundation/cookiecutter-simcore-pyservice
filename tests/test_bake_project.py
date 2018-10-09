@@ -61,7 +61,7 @@ def test_run_tests(cookies):
     working_dir = str(result.project)
     commands = (
         "python3 -m venv venv",
-        "venv/bin/pip3 install -r requirements/dev.txt",
+        "venv/bin/pip install -r requirements/dev.txt",
         "venv/bin/pytest",
     )
     for cmd in commands:
