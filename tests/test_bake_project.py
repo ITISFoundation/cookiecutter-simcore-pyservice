@@ -61,12 +61,12 @@ def test_run_tests(cookies):
     working_dir = str(result.project)
     commands = (
         "python3 -m venv venv",
-        "venv/bin/pip install -r requirements/dev.txt",
-        "venv/bin/pytest",
+        "./venv/bin/pip install -r requirements/dev.txt",
+        "./venv/bin/pytest",
     )
     with inside_dir(str(result.project)):
         for cmd in commands:
             log.info("Running '%s' ...", cmd)
             assert subprocess.check_call(cmd.split()) == 0
-            log.info( " ".join(os.listdir(working_dir)) )
+            log.info( " ".join(os.listdir(working_dir + "venv/bin")) )
             log.info("Done '%s' .", cmd)
