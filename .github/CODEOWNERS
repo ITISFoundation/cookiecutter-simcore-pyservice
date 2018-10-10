@@ -1,0 +1,7 @@
+# Order is important. The last matching pattern has the most precedence.
+
+# files and folders recursively
+/                  @pcrespov
+
+# any change in travis
+/.travis.yml     @sanderegg
