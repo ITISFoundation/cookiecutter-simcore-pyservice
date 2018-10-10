@@ -118,7 +118,7 @@ build/
 output/
 out/
 
-# temporary
+# temporary folders
 tmp/
 
 # explicit mark 
