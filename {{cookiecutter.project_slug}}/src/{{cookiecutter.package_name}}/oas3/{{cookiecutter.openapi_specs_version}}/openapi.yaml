@@ -43,13 +43,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: 'components/schemas/health_check.yaml#HealthCheckEnveloped'
+                $ref: './components/schemas/health_check.yml#/HealthCheckEnveloped'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: 'components/schemas/error.yaml#ErrorEnveloped'
+                $ref: './components/schemas/error.yml#/ErrorEnveloped'
   /check/{action}:
     get:
       tags:
@@ -70,19 +70,19 @@ paths:
         content:
           application/json:
             schema:
-              $ref: 'components/schemas/fake.yaml#Fake'
+              $ref: './components/schemas/fake.yml#/FakeType'
       responses:
         '200':
           description: Echoes response based on action
           content:
             application/json:
               schema:
-                $ref: 'components/schemas/fake.yaml#FakeEnveloped'
+                $ref: './components/schemas/fake.yml#/FakeEnveloped'
         default:
           description: Unexpected error
           content:
             application/json:
               schema:
-                $ref: 'components/schemas/error.yaml#ErrorEnveloped'
+                $ref: './components/schemas/error.yml#/ErrorEnveloped'
 
           
