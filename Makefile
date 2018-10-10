@@ -34,7 +34,7 @@ $(OUTPUT_DIR):
 
 .PHONY: run
 # target: run - Runs cookiecutter into output folder
-run: $(OUTPUT_DIR)
+run: $(OUTPUT_DIR) venv
 
 .PHONY: replay
 replay:
@@ -43,8 +43,8 @@ replay:
 
 
 .PHONE: test
-test:
-	pytest
+test: install
+	. "$(VENV_DIR)/bin/activate" && pytest -s -c $(CURDIR)/pytest.ini
 
 
 

@@ -11,7 +11,7 @@ from setuptools import find_packages, setup
 
 _CDIR = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
 
-if sys.version_info<(3, 6):
+if sys.version_info < (3, 6):
     raise RuntimeError("Requires >=3.6, got %s. Did you forget to activate virtualenv?" % sys.version_info)
 
 def list_datafiles_at(*locations):
@@ -45,7 +45,8 @@ _CONFIG = dict(
     name='{{ cookiecutter.distribution_name }}',
     version='{{ cookiecutter.version }}',
     description={{ '{0!r}'.format(cookiecutter.project_short_description).lstrip('ub') }},
-    author={{ '{0!r} ({1})'.format(cookiecutter.full_name, cookiecutter.github_username).lstrip('ub')}},
+    # FIXME: 'Real Name' (github_name) !!
+    author={{ '{0!r}'.format(cookiecutter.full_name).lstrip('ub')}},
     python_requires='>=3.6',
     packages=find_packages(where='src'),
     package_dir={

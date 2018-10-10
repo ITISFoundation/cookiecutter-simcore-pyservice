@@ -20,12 +20,13 @@ servers:
       version:
         default: '{{ cookiecutter.openapi_specs_version }}'
         enum:
+          # TODO: add all possible versions and set latest as default
           - '{{ cookiecutter.openapi_specs_version }}'
 tags:
 - name: admins
   description: Secured Admin-only calls
-- name: developers
-  description: Operations available to regular developers
+- name: tests
+  description: Operations available for testing
 - name: users
   description: Operations available to regular users
 paths:
@@ -49,3 +50,39 @@ paths:
             application/json:
               schema:
                 $ref: 'components/schemas/error.yaml#ErrorEnveloped'
+  /check/{action}:
+    get:
+      tags:
+        - tests
+      summary: Test checkpoint to ask server to fail or echo back the transmitted data
+      parameters:
+        - in: query
+          name: data
+          schema:
+            type: string
+        - in: path
+          name: action
+          schema:
+            type: string
+            default: 'echo'
+            enum: ['fail', 'echo']
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: 'components/schemas/fake.yaml#Fake'
+      responses:
+        '200':
+          description: Echoes response based on action
+          content:
+            application/json:
+              schema:
+                $ref: 'components/schemas/fake.yaml#FakeEnveloped'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: 'components/schemas/error.yaml#ErrorEnveloped'
+
+          

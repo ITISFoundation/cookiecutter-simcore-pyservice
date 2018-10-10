@@ -1,6 +1,9 @@
 Cookiecutter simcore pyservice
 ==============================
 
+[![Build Status](https://travis-ci.org/itisfoundation/cookiecutter-simcore-pyservice.svg?branch=master)](https://travis-ci.org/itisfoundation/cookiecutter-simcore-pyservice)
+
+
 Cookiecutter template for osparc-simcore's python-based services
 
 This template was built upon ideas/snippets borrowed from already existing great [cookiecutter]s as
@@ -15,7 +18,7 @@ Install `cookiecutter` command line: `pip install cookiecutter`
 
 Usage
 -----
-Generate a new Cookiecutter template layout: `cookiecutter gh:pcrespov/cookiecutter-simcore-pyservice`    
+Generate a new Cookiecutter template layout: `cookiecutter gh:itisfoundation/cookiecutter-simcore-pyservice`    
 
 License
 -------

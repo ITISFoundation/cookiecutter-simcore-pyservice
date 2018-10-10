@@ -6,11 +6,18 @@ import logging
 
 from aiohttp import web
 
+from .settings import APP_CONFIG_KEY
+
 log = logging.getLogger(__name__)
 
 def create(config):
     log.debug("Initializing ... ")
+
     app = web.Application()
+    app[APP_CONFIG_KEY] = config
+
+
+    # TODO: here goes every package/plugin setups
 
     return app
 

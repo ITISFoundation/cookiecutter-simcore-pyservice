@@ -113,8 +113,13 @@ venv.bak/
 .appveyor.token
 *.bak
 
+# output folders
 build/
 output/
 out/
 
+# temporary folders
+tmp/
+
+# explicit mark 
 *ignore*

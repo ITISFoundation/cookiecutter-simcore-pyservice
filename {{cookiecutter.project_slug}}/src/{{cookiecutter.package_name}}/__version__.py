@@ -28,9 +28,9 @@ import semantic_version
 
 try:
     # access metadata
-    __version__ = pkg_resources.get_distribution('pip').version
-    assert __version__=="{{ cookiecutter.version }}"
-except TypeError as ee:
+    __version__ = pkg_resources.get_distribution('{{ cookiecutter.package_name }}').version
+    assert __version__=="{{ cookiecutter.version }}", "Did you install this package?"
+except AssertionError as ee:
     import logging
     logging.debug(ee)
 

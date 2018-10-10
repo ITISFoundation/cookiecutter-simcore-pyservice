@@ -1,6 +1,7 @@
 {
     "packageName":"{{ cookiecutter.sdk_package_name }}",
-    "projectName":"client-sdk",
+    "projectName":"Client-sdk for {{ cookiecutter.distribution_name }}",
+    "projectDescription":"{{ cookiecutter.project_name }} client's SDK",
     "packageVersion":"{{ cookiecutter.version }}",
     "packageUrl":"https://github.com/ITISFoundation/osparc-simcore/tree/master/services/{{ cookiecutter.project_slug }}/client-sdk/python",
     "library":"asyncio"
