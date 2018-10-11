@@ -4,6 +4,8 @@
     "project_name": "Name of the project",
     "project_short_description": "A short description of the project",
     "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
+    "dockercompose_service_name": "{{ cookiecutter.project_slug }}",
+    "dockercompose_service_api_port": "8080",
     "package_name": "simcore_service_{{ cookiecutter.project_slug|replace('-','_') }}",
     "distribution_name": "simcore-service-{{ cookiecutter.project_slug }}",
     "command_line_interface_bin_name": "{{ cookiecutter.distribution_name }}",

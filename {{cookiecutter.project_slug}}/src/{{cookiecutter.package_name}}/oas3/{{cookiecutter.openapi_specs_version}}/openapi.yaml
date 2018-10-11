@@ -10,8 +10,8 @@ info:
     name: MIT
     url: https://github.com/ITISFoundation/osparc-simcore/blob/master/LICENSE
 servers:
-  - url: http://{host}:{port}/{version}
-    description: Development server
+  - description: Development server
+    url: http://{host}:{port}/{version}    
     variables:
       host:
         default: 'localhost'
@@ -22,6 +22,14 @@ servers:
         enum:
           # TODO: add all possible versions and set latest as default
           - '{{ cookiecutter.openapi_specs_version }}'
+  - description: Production server
+    url: https://{{ cookiecutter.dockercompose_service_name }}:{port}/{version}
+    variables:
+      port:
+        default: {{ cookiecutter.dockercompose_service_api_port }}
+      version:
+        default: '{{ cookiecutter.openapi_specs_version }}'
+
 tags:
 - name: admins
   description: Secured Admin-only calls
@@ -85,4 +93,3 @@ paths:
               schema:
                 $ref: './components/schemas/error.yml#/ErrorEnveloped'
 
-          
