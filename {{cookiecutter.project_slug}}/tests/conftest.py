@@ -2,6 +2,9 @@
 # pylint: disable=W0611
 # TODO: W0613:Unused argument ...
 # pylint: disable=W0613
+# W0621:Redefining name ... from outer scope 
+# pylint: disable=W0621
+
 import sys
 
 import pytest
