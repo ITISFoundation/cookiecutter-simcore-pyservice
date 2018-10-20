@@ -1,5 +1,8 @@
-# W0621:Redefining name 'spec_basepath' from outer scope (line 14)
-# pylint: disable=W0621
+# pylint:disable=wildcard-import
+# pylint:disable=unused-import
+# pylint:disable=unused-variable
+# pylint:disable=unused-argument
+# pylint:disable=redefined-outer-name
 
 from pathlib import Path
 

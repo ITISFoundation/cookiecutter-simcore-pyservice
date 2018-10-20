@@ -1,9 +1,9 @@
-# pylint: disable=W0621
-# TODO: W0611:Unused import ...
-# pylint: disable=W0611
-# W0612:Unused variable
-# TODO: W0613:Unused argument ...
-# pylint: disable=W0613
+# pylint:disable=wildcard-import
+# pylint:disable=unused-import
+# pylint:disable=unused-variable
+# pylint:disable=unused-argument
+# pylint:disable=redefined-outer-name
+
 import pytest
 
 from aiohttp import web

@@ -1,9 +1,8 @@
-# TODO: W0611:Unused import ...
-# pylint: disable=W0611
-# TODO: W0613:Unused argument ...
-# pylint: disable=W0613
-# W0621: Redefining name ... from outer scope
-# pylint: disable=W0621
+# pylint:disable=wildcard-import
+# pylint:disable=unused-import
+# pylint:disable=unused-variable
+# pylint:disable=unused-argument
+# pylint:disable=redefined-outer-name
 
 import pytest
 import subprocess
@@ -26,10 +25,13 @@ def test_run_pylint(pylintrc, package_dir):
 
 def test_main(here): # pylint: disable=unused-variable
     """
-        - Checks cli in place
-        - Checks distribution incompatibilities while loading entry-point
+        Checks cli in place
     """
     with pytest.raises(SystemExit) as excinfo:
         main("--help".split())
     
+    # TODO: check at least config file 
     assert excinfo.value.code == 0
+
+
+# TODO run entrypoint with subprocess since it check dependency conflicts upon load_entrypoint!
