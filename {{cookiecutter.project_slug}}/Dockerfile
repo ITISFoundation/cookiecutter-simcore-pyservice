@@ -54,6 +54,8 @@ WORKDIR /home/scu
 # install base 3rd party packages to accelerate runtime installs
 COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/requirements/base.txt requirements-base.txt
 COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/docker docker
+RUN chmod +x docker/boot.sh &&\
+    chmod +x docker/entrypoint.sh 
 RUN $PIP install --no-cache-dir -r requirements-base.txt
 
 # --------------------------Development stage -------------------
