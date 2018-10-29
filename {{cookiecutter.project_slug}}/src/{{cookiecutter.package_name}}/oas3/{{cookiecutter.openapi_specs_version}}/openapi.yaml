@@ -11,18 +11,25 @@ info:
     url: https://github.com/ITISFoundation/osparc-simcore/blob/master/LICENSE
 servers:
   - description: Development server
-    url: 'http://{host}:{port}/{{ cookiecutter.openapi_specs_version }}'
+    url: http://{host}:{port}/{basePath}
     variables:
       host:
         default: 'localhost'
       port:
         default: '8001'
+      basePath:
+        enum:
+          - {{ cookiecutter.openapi_specs_version }}
+        default: {{ cookiecutter.openapi_specs_version }}
   - description: Production server
-    url: https://{{ cookiecutter.dockercompose_service_name }}:{port}/{{ cookiecutter.openapi_specs_version }}'
+    url: '{publicUrl}/{basePath}'
     variables:
-      port:
-        default: {{ cookiecutter.dockercompose_service_api_port }}
-
+      publicUrl:
+        default: 'https://{{ cookiecutter.dockercompose_service_name }}.io'
+      basePath:
+        enum:
+          - v0
+        default: {{ cookiecutter.openapi_specs_version }}
 tags:
 - name: admins
   description: Secured Admin-only calls
