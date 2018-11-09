@@ -4,7 +4,7 @@
 ##
 coveralls==1.5.1
 pytest==3.10.0
-pytest-aiohttp
+pytest-aiohttp==0.3.0
 pytest-cov
 pytest-docker
 openapi_spec_validator
