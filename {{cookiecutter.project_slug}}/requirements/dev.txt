@@ -14,7 +14,7 @@
 #-e {{ cookiecutter.simcore_install_root }}/packages/director-sdk/python
 
 # code versioning
-bumpversion
+bumpversion==0.5.3
 # code formatting
 autopep8
 # code replament/rename
