@@ -3,6 +3,9 @@ import logging
 
 from aiohhtp import web
 
+from servicelib import rest_routes
+from servicelib.application_keys import APP_OPENAPI_SPECS_KEY
+from rest_handles import check_action, check_health
 
 log = logging.getLogger(__name__)
 
@@ -13,7 +16,12 @@ def setup(app: web.Application):
     """
     log.debug("Setting up %s ...", __name__)
 
+    valid_specs = app[APP_OPENAPI_SPECS_KEY]
 
+    assert valid_specs, "No API specs in app[%s]. Skipping setup %s "% (APP_OPENAPI_SPECS_KEY, __name__)
+
+    routes = rest_routes.create(valid_specs, [check_action, check_health])
+    app.router.add_routes(routes)
 
 
 

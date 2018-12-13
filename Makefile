@@ -52,7 +52,7 @@ $(VENV_DIR):
 	@python3 -m venv "$(VENV_DIR)"
 	@"$(VENV_DIR)/bin/pip3" install --upgrade pip wheel setuptools
 	@"$(VENV_DIR)/bin/pip3" install pylint
-	@echo "To activate the virtual environment, execute 'source env/bin/activate'"
+	@echo "To activate the virtual environment, execute 'source $(VENV_DIR)/bin/activate'"
 
 .PHONY: venv
 # target: env – Create the virtual environment into venv folder

@@ -12,7 +12,6 @@ from .__version__ import get_version_object
 log = logging.getLogger(__name__)
 
 ## CONSTANTS--------------------
-TIMEOUT_IN_SECS = 2
 RESOURCE_KEY_OPENAPI = "oas3/{{ cookiecutter.openapi_specs_version }}"
 
 ## BUILD ------------------------
