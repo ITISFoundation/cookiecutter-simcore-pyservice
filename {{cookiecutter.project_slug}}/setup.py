@@ -17,7 +17,9 @@ readme = (current_dir/'README.md').read_text()
 
 install_requirements = [
     'aiohttp',
-    'trafaret'
+    'trafaret',
+    'tenacity',
+    'simcore-service-library', # pip install -e git+https://github.com/ITISFoundation/osparc-simcore.git@master#egg=servicelib\&subdirectory=packages/service-library
 ]
 
 test_requirements = [

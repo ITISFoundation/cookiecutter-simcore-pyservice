@@ -22,20 +22,15 @@ Package version is defined in the setup.py following the principle of single-sou
 
 """
 import pkg_resources
-import semantic_version
+import logging
 
 # TODO: introduce metadata info from vcs
-
 try:
     # access metadata
     __version__ = pkg_resources.get_distribution('{{ cookiecutter.package_name }}').version
     assert __version__=="{{ cookiecutter.version }}", "Did you install this package?"
 except AssertionError as ee:
-    import logging
-    logging.debug(ee)
+    logging.error(ee)
 
-
-def get_version_object():
-    return semantic_version.Version(__version__)
 
 

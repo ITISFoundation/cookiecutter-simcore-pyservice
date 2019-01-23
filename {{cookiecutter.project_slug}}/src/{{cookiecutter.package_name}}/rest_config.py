@@ -1,7 +1,7 @@
 """ rest subsystem's configuration
 
+    - constants
     - config-file schema
-    - settings
 """
 import trafaret as T
 
