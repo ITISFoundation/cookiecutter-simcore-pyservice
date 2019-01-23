@@ -2,30 +2,52 @@
 
     Functions to create, setup and run an aiohttp application provided a configuration object
 """
+import json
 import logging
-
+from typing import Dict
 from aiohttp import web
 
-from .settings import APP_CONFIG_KEY
+from .rest import setup_rest
+from .application_config import APP_CONFIG_KEY
 
 log = logging.getLogger(__name__)
 
-def create(config):
-    log.debug("Initializing ... ")
+
+def create_application(config: Dict) -> web.Application:
+    """
+        Initializes service
+    """
+    log.debug("Initializing app ... ")
 
     app = web.Application()
     app[APP_CONFIG_KEY] = config
 
 
+    testing = config["main"].get("testing", False)
+    if testing:
+        log.debug("Config:\n%s",
+            json.dumps(config, indent=2, sort_keys=True))
+
+
     # TODO: here goes every package/plugin setups
+    setup_rest(app, debug=testing)
 
     return app
 
-def run(config, app=None):
-    log.debug("Serving app ... ")
-    if not app:
-        app = create(config)
 
-    web.run_app(app, 
-        host=config["main"]["host"], 
-        port=config["main"]["port"])
+def run_service(config: Dict) -> web.Application:
+    """ Runs service = creates and runs application
+
+    """
+    log.debug("Serving app ... ")
+
+    app = create_application(config)
+    web.run_app(app,
+                host=config["main"]["host"],
+                port=config["main"]["port"])
+    return app
+
+__all__ = (
+    'create_application',
+    'run_service'
+)

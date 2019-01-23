@@ -8,14 +8,13 @@ import asyncio
 import logging
 
 from aiohttp import web
-from tenacity import before_sleep_log, retry, stop_after_attempt, wait_fixed
-
 from servicelib import openapi
 from servicelib.application_keys import APP_CONFIG_KEY
 from servicelib.openapi import create_openapi_specs
 from servicelib.rest_middlewares import append_rest_middlewares
+from tenacity import before_sleep_log, retry, stop_after_attempt, wait_fixed
 
-from . import rest_routes
+from . import rest_handlers
 from .rest_config import APP_OPENAPI_SPECS_KEY, CONFIG_SECTION_NAME
 
 log = logging.getLogger(__name__)
@@ -23,7 +22,6 @@ log = logging.getLogger(__name__)
 
 RETRY_WAIT_SECS = 2
 RETRY_COUNT = 10
-CONNECT_TIMEOUT_SECS = 30
 
 @retry( wait=wait_fixed(RETRY_WAIT_SECS),
         stop=stop_after_attempt(RETRY_COUNT),
@@ -31,7 +29,6 @@ CONNECT_TIMEOUT_SECS = 30
 async def get_specs(location):
     specs = await create_openapi_specs(location)
     return specs
-
 
 def setup(app: web.Application, *, debug=False):
     log.debug("Setting up %s %s...", __name__, "[DEBUG]" if debug else "")
@@ -46,21 +43,30 @@ def setup(app: web.Application, *, debug=False):
         # TODO: What if many specs to expose? v0, v1, v2 ... perhaps a dict instead?
         app[APP_OPENAPI_SPECS_KEY] = specs # validated openapi specs
 
+    except openapi.OpenAPIError:
+        # TODO: protocol when some parts are unavailable because of failure
+        # Define whether it is critical or this server can still
+        # continue working offering partial services
+        log.exception("Invalid rest API specs. Rest API is DISABLED")
+    else:
         # routes
-        routes = rest_routes.create(specs)
-        app.router.add_routes(routes)
+        base_path = openapi.get_base_path(specs)
+
+        log.debug("creating %s ", __name__)
+        routes = []
+        path, handle = '/', rest_handlers.check_health
+        operation_id = specs.paths[path].operations['get'].operation_id
+        routes.append( web.get(base_path+path, handle, name=operation_id) )
+
+        path, handle = '/check/{action}', rest_handlers.check_action
+        operation_id = specs.paths[path].operations['post'].operation_id
+        routes.append( web.post(base_path+path, handle, name=operation_id) )
 
         # middlewares
         base_path = openapi.get_base_path(specs)
         version  = cfg["version"]
         assert "/"+version == base_path, "Expected %s, got %s" %(version, base_path)
         append_rest_middlewares(app, base_path)
-
-    except openapi.OpenAPIError:
-        # TODO: protocol when some parts are unavailable because of failure
-        # Define whether it is critical or this server can still
-        # continue working offering partial services
-        log.exception("Invalid rest API specs. Rest API is DISABLED")
 
 # alias
 setup_rest = setup

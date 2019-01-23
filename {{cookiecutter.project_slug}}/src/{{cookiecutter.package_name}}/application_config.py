@@ -20,8 +20,10 @@ import logging
 
 import trafaret as T
 from servicelib import application_keys  # pylint:disable=unused-import
+from servicelib.application_keys import APP_CONFIG_KEY
 
-from . import resources, rest_config
+from .resources import resources
+from . import rest_config
 
 log = logging.getLogger(__name__)
 
@@ -51,7 +53,14 @@ def create_schema():
     return schema
 
 
-CLI_DEFAULT_CONFIGFILE = 'config-prod.yaml'
-app_schema = create_schema() 
+ # app[APP_CONFIG_KEY] = key for config object
+APP_CONFIG_KEY = APP_CONFIG_KEY
 
-assert resources.exists( 'config/' + CLI_DEFAULT_CONFIGFILE )
+# config/${CLI_DEFAULT_CONFIGFILE}
+CLI_DEFAULT_CONFIGFILE = 'config-prod.yml'
+
+# schema for app config's startup file
+app_schema = create_schema()
+
+assert resources.exists( 'config/' + CLI_DEFAULT_CONFIGFILE ), \
+        "'config/%s' does not exist" % CLI_DEFAULT_CONFIGFILE

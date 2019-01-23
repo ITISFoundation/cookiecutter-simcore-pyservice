@@ -11,14 +11,29 @@ import pytest
 
 from servicelib.utils import search_osparc_repo_dir
 
+import {{ cookiecutter.package_name }}
 
-@pytest.fixture
+
+@pytest.fixture(scope='session')
 def here():
     return Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
 
 @pytest.fixture(scope='session')
-def osparc_simcore_root_dir():
-    root_dir = search_osparc_repo_dir()
+def package_dir(here):
+    dirpath = Path({{ cookiecutter.package_name }}.__file__).resolve().parent
+    assert dirpath.exists()
+    return dirpath
+
+@pytest.fixture(scope='session')
+def osparc_simcore_root_dir(here):
+    root_dir = search_osparc_repo_dir(here)
     assert root_dir and root_dir.exists(), "Is this service within osparc-simcore repo?"
     assert any(root_dir.glob("services/{{ cookiecutter.project_slug }}")), "%s not look like rootdir" % root_dir
     return root_dir
+
+
+@pytest.fixture(scope='session')
+def api_specs_dir(osparc_simcore_root_dir):
+    specs_dir = osparc_simcore_root_dir/ "api" / "specs" / "{{ cookiecutter.project_slug }}"
+    assert specs_dir.exists()
+    return specs_dir

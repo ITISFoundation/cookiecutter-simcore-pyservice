@@ -20,7 +20,7 @@ async def check_health(request: web.Request):
     data = {
         'name':__name__.split('.')[0],
         'version': __version__,
-        'status': 'SERVICE_RUNNING',
+        'status': 'SERVICE_RUNNING', # TODO: check state!
         'api_version': __version__
     }
 

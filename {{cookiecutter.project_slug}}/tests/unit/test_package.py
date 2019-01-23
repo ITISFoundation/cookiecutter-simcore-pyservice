@@ -4,8 +4,12 @@
 # pylint:disable=unused-argument
 # pylint:disable=redefined-outer-name
 
-import pytest
+import os
+import re
 import subprocess
+from pathlib import Path
+
+import pytest
 
 from {{ cookiecutter.package_name }}.cli import main
 

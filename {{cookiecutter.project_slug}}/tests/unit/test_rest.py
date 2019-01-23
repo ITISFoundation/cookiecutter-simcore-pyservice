@@ -8,32 +8,45 @@ import pytest
 
 from aiohttp import web
 
-from {{ cookiecutter.package_name }}.settings import APP_CONFIG_KEY
 from {{ cookiecutter.package_name }}.rest import setup_rest
-from {{ cookiecutter.package_name }}.session import setup_session
+from {{ cookiecutter.package_name }}.application_config import APP_CONFIG_KEY
+
+
+API_VERSION = "{{ cookiecutter.openapi_specs_version }}"
 
 
 @pytest.fixture
-def client(loop, aiohttp_unused_port, aiohttp_client):
+def client(loop, aiohttp_unused_port, aiohttp_client, api_specs_dir):
     app = web.Application()
 
-    server_kwargs={'port': aiohttp_unused_port(), 'host': 'localhost'}
-        
-    app[APP_CONFIG_KEY] = { 'main': server_kwargs } # Fake config
+    main_config={
+        'port': aiohttp_unused_port(),
+        'host': 'localhost'
+    }
 
-    # loads only two submodules
-    setup_session(app)
-    setup_rest(app)
+    # fake config
+    app[APP_CONFIG_KEY] = {
+        "main": main_config,
+        "rest": {
+            "version": API_VERSION,
+            "location": str(api_specs_dir / API_VERSION / "openapi.yaml")
+        }
+    }
 
-    cli = loop.run_until_complete( aiohttp_client(app, server_kwargs=server_kwargs) )
+    # activates only restAPI sub-modules
+    setup_rest(app, debug=True)
+
+    cli = loop.run_until_complete( aiohttp_client(app, server_kwargs=main_config) )
     return cli
 
-async def test_health_check(client):
-    resp = await client.get("/v0/")
-    assert resp.status == 200
+# ------------------------------------------
 
-    envelope = await resp.json()
-    data, error = [envelope[k] for k in ('data', 'error')]
+async def test_check_health(client):
+    resp = await client.get("/%s/" % API_VERSION)
+    payload = await resp.json()
+
+    assert resp.status == 200, str(payload)
+    data, error = tuple(payload.get(k) for k in ('data', 'error'))
 
     assert data
     assert not error
@@ -42,22 +55,24 @@ async def test_health_check(client):
     assert data['status'] == 'SERVICE_RUNNING'
 
 
-async def test_action_check(client):
-    QUERY = '{{ cookiecutter.github_username }}'
+async def test_check_action(client):
+    QUERY = 'value'
     ACTION = 'echo'
     FAKE = {
         'path_value': 'one',
         'query_value': 'two',
         'body_value': {
-            'a': 33,
-            'b': 45
+            'a': 'foo',
+            'b': '45'
         }
     }
-
-    resp = await client.post("/v0/check/{}?data={}".format(ACTION, QUERY), json=FAKE)
+    url = "/{ver}/check/{action}?data={query}".format(
+        ver=API_VERSION,
+        action=ACTION,
+        query=QUERY)
+    resp = await client.post(url, json=FAKE)
     payload = await resp.json()
-
-    data, error = tuple( payload.get(k) for k in ('data', 'error') )
+    data, error = tuple(payload.get(k) for k in ('data', 'error'))
 
     assert resp.status == 200, str(payload)
     assert data
@@ -67,4 +82,4 @@ async def test_action_check(client):
 
     assert data['path_value'] == ACTION
     assert data['query_value'] == QUERY
-    #assert data['body_value'] == FAKE['body_value']
+    assert data['body_value'] == FAKE
