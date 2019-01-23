@@ -121,5 +121,8 @@ out/
 # temporary folders
 tmp/
 
-# explicit mark 
+# explicit mark
 *ignore*
+
+# vscode configuration
+.vscode
