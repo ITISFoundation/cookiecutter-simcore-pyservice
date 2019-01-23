@@ -3,9 +3,10 @@
 ##    pip install --requirement=requirements.txt
 ##
 coveralls
-pytest
+pytest~=4.1
 pytest-aiohttp
 pytest-cov
-pytest-docker
+pytest-runner
+pylint~=2.2
 openapi_spec_validator
-pyyaml
+pyyaml>=4.2b1 # https://nvd.nist.gov/vuln/detail/CVE-2017-18342

@@ -64,6 +64,32 @@ venv: $(VENV_DIR)
 .venv: $(VENV_DIR)
 
 
+##
+# Building and packaging.
+
+
+.PHONY: install
+# target: install – Install project sources in "development mode"
+install:
+	@$(PYTHON) setup.py develop
+
+.PHONY: uninstall
+# target: uninstall – Uninstall project sources
+uninstall:
+	@$(PYTHON) setup.py develop --uninstall
+
+
+##
+# Testing.
+
+.PHONY: check
+# target: check – Run tests
+check:
+	$(PYTHON) setup.py pytest --addopts tests/unit
+
+
+
+
 ## -------------------------------
 # Auxiliary targets.
 
@@ -90,4 +116,3 @@ clean:
 		"$(CURDIR)/.cache" \
 		"$(CURDIR)/.mypy_cache" \
 		"$(CURDIR)/.pytest_cache"
-

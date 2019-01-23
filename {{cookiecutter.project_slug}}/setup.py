@@ -17,14 +17,15 @@ readme = (current_dir/'README.md').read_text()
 
 install_requirements = [
     'aiohttp',
-    'trafaret',
+    'trafaret', 'trafaret-config',
     'tenacity',
     'simcore-service-library', # pip install -e git+https://github.com/ITISFoundation/osparc-simcore.git@master#egg=servicelib\&subdirectory=packages/service-library
 ]
 
 test_requirements = [
     'pytest',
-    'pytest-aiohttp', 'pytest-cov',
+    'pytest-aiohttp', 'pytest-cov', 'pytest-runner'
+    'pylint~=2.2',
     'openapi_spec_validator',
     'pyyaml>=4.2b1', # https://nvd.nist.gov/vuln/detail/CVE-2017-18342
 ]
@@ -60,6 +61,9 @@ setup_kwargs = dict(
     extras_require= {
         'test': test_requirements
     },
+    setup_requires=[
+        'pytest-runner',
+    ],
     entry_points={
         'console_scripts': [
             '{{ cookiecutter.command_line_interface_bin_name }} = {{ cookiecutter.package_name }}.cli:main',
