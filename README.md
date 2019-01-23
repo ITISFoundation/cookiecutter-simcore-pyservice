@@ -16,6 +16,18 @@ Usage
 -----
 Generate a new Cookiecutter template layout: `cookiecutter gh:itisfoundation/cookiecutter-simcore-pyservice`    
 
+
+Development
+-----------
+
+``` bash
+# creates virtual-environment, and runs current cookie-cutter if 'output' does not exists
+make run
+
+```
+
+
+
 License
 -------
 This project is licensed under the terms of the [MIT License](/LICENSE)

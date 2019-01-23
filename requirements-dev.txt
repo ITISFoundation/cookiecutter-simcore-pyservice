@@ -1,5 +1,12 @@
-cookiecutter==1.6.0
-flake8==3.5.0
+cookiecutter~=1.6
+
+# tools ----------------------
+# linter
 pylint~=2.0
-pytest==3.3.2
-pytest-cookies==0.3.0
+
+# testing
+pytest~=4.0
+pytest-cookies~=0.3
+
+# package management
+yolk3k  # obtains info about installed packages or available in PyPi
