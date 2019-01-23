@@ -14,10 +14,10 @@ clean:
 	@rm -rfv \
 		"$(CURDIR)/.cache" \
 		"$(CURDIR)/.mypy_cache" \
-		"$(CURDIR)/.pytest_cache"	
+		"$(CURDIR)/.pytest_cache"
 	@rm -rf "$(VENV_DIR)"
 	@rm -rf "$(OUTPUT_DIR)"
-	@rm .*-ignore
+	@rm .tmp-
 
 #-----------------------------------
 .PHONY: install
@@ -29,19 +29,19 @@ install: venv
 #-----------------------------------
 $(OUTPUT_DIR):
 	@mkdir -p $(OUTPUT_DIR)
-	. "$(VENV_DIR)/bin/activate" && cookiecutter --output-dir "$(OUTPUT_DIR)" "$(TEMPLATE)" 
+	. "$(VENV_DIR)/bin/activate" && cookiecutter --output-dir "$(OUTPUT_DIR)" "$(TEMPLATE)"
 
 .PHONY: run
 # Runs cookiecutter into output folder
 run: install $(OUTPUT_DIR)
-	@touch .run-ignore
+	@touch .tmp-ran
 
-.run-ignore: run
+.tmp-ran: run
 
 #-----------------------------------
 .PHONY: replay
-replay: .run-ignore
-	. "$(VENV_DIR)/bin/activate" && cookiecutter --no-input -f --config-file=".cookiecutterrc-ignore"  --output-dir "$(OUTPUT_DIR)" "$(TEMPLATE)" 
+replay: .tmp-ran
+	. "$(VENV_DIR)/bin/activate" && cookiecutter --no-input -f --config-file=".cookiecutterrc-ignore"  --output-dir "$(OUTPUT_DIR)" "$(TEMPLATE)"
 
 #-----------------------------------
 .PHONE: test

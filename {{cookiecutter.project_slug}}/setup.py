@@ -25,18 +25,18 @@ install_requirements = [
 test_requirements = [
     'pytest',
     'pytest-aiohttp', 'pytest-cov',
-    'openapi_spec_validator', 
+    'openapi_spec_validator',
     'pyyaml>=4.2b1', # https://nvd.nist.gov/vuln/detail/CVE-2017-18342
 ]
 
-kwargs = dict(
+setup_kwargs = dict(
     name='{{ cookiecutter.distribution_name }}',
     version='{{ cookiecutter.version }}',
     # FIXME: 'Real Name' (github_name) !!
     author={{ '{0!r}'.format(cookiecutter.full_name).lstrip('ub')}},
     description={{ '{0!r}'.format(cookiecutter.project_short_description).lstrip('ub') }},
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 1 - Planning',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3.6',
@@ -54,7 +54,7 @@ kwargs = dict(
             ],
     },
     include_package_data=True,
-    install_requires= install_requirements,    
+    install_requires= install_requirements,
     test_suite='tests',
     tests_require=test_requirements,
     extras_require= {
@@ -72,7 +72,7 @@ def main():
     """ Execute the setup commands.
 
     """
-    setup(**kwargs)
+    setup(**setup_kwargs)
     return 0 # syccessful termination
 
 if __name__ == "__main__":
