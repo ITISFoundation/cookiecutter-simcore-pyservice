@@ -1,0 +1,12 @@
+## Startup configuration for the {{ cookiecutter.package_name }} application in production mode
+main:
+  logging: ${LOG_LEVEL:-WARN}
+  host: ${HOSTNAME:-0.0.0.0}
+  port: ${PORT:-8888}
+  debug: False
+rest:
+  version: {{cookiecutter.openapi_specs_version}}
+  location: ${OSPARC_SIMCORE_REPO_ROOTDIR}/api/specs/{{cookiecutter.project_slug}}/{{cookiecutter.openapi_specs_version}}/openapi.yaml
+  #location: http://localhost:8043/api/specs/{{cookiecutter.project_slug}}/{{cookiecutter.openapi_specs_version}}/openapi.yaml
+
+## add here config sections for more service subsystems ...

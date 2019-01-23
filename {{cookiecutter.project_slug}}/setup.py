@@ -65,9 +65,6 @@ _CONFIG = dict(
             'openapi/*.yaml',
             ],
     },
-    data_files = list_datafiles_at(
-        "etc/", # Contain the configuration files for all the programs that run on your system.
-    ),
     entry_points={
         'console_scripts': [
             '{{ cookiecutter.command_line_interface_bin_name }} = {{ cookiecutter.package_name }}.cli:main',
