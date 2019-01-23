@@ -1,68 +1,62 @@
-import io
-import re
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import sys
-from fnmatch import fnmatch
-from itertools import chain
-from os import walk
-from os.path import join
+import re
 from pathlib import Path
+from setuptools import setup, find_packages
 
-from setuptools import find_packages, setup
-
-_CDIR = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
-
-if sys.version_info != (3, 6):
-    raise RuntimeError("Requires >=3.6, got %s. Did you forget to activate virtualenv?" % sys.version_info)
-
-def list_datafiles_at(*locations):
-    def _listdir(root, wildcard='*'):
-        """ Recursively list all files under 'root' whose names fit a given wildcard.
-
-        Returns (dirname, files) pair per level. 
-        See https://docs.python.org/2/distutils/setupscript.html#installing-additional-files
-        """
-        for dirname, _, names in walk(root):
-            yield dirname, tuple(join(dirname, name) for name in names if fnmatch(name, wildcard))
-
-    return list(chain.from_iterable(_listdir(root) for root in locations))
-
-def read(*names, **kwargs):
-    with io.open(join(_CDIR, *names), encoding=kwargs.get('encoding', 'utf8')) as f:
-        return f.read()
-
-def list_packages(*parts):
-    pkg_names = []
-    COMMENT = re.compile(r'^\s*#')
-    with io.open(join(_CDIR, *parts)) as f:
-        pkg_names = [line.strip() for line in f.readlines() if not COMMENT.match(line)]
-    return pkg_names
-
-#####################################################################################
-# NOTE see https://packaging.python.org/discussions/install-requires-vs-requirements/
+if sys.version_info.major != 3 and sys.version_info.minor != 6:
+    raise RuntimeError("Expected ~=3.6, got %s. Did you forget to activate virtualenv?" % str(sys.version_info))
 
 
-_CONFIG = dict(
+current_dir = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
+comment_pattern = re.compile(r'^\s*#')
+
+readme = (current_dir/'README.md').read_text()
+
+install_requirements = [
+    'aiohttp',
+    'trafaret'
+]
+
+test_requirements = [
+    'pytest',
+    'pytest-aiohttp', 'pytest-cov',
+    'openapi_spec_validator', 
+    'pyyaml>=4.2b1', # https://nvd.nist.gov/vuln/detail/CVE-2017-18342
+]
+
+kwargs = dict(
     name='{{ cookiecutter.distribution_name }}',
     version='{{ cookiecutter.version }}',
-    description={{ '{0!r}'.format(cookiecutter.project_short_description).lstrip('ub') }},
     # FIXME: 'Real Name' (github_name) !!
     author={{ '{0!r}'.format(cookiecutter.full_name).lstrip('ub')}},
-    python_requires='==3.6',
+    description={{ '{0!r}'.format(cookiecutter.project_short_description).lstrip('ub') }},
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'License :: OSI Approved :: MIT License',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3.6',
+    ],
+    long_description=readme,
+    license="MIT license",
+    python_requires='~=3.6',
     packages=find_packages(where='src'),
     package_dir={
         '': 'src',
     },
-    include_package_data=True,
-    install_requires= list_packages("requirements", "base.txt"),
-    tests_require=list_packages("tests", "requirements.txt"),
-    extras_require= {
-        'test': list_packages("tests", "requirements.txt")
-    },
-    setup_requires=['pytest-runner'],
     package_data={
         '': [
             'config/*.yaml',
             ],
+    },
+    include_package_data=True,
+    install_requires= install_requirements,    
+    test_suite='tests',
+    tests_require=test_requirements,
+    extras_require= {
+        'test': test_requirements
     },
     entry_points={
         'console_scripts': [
@@ -76,7 +70,7 @@ def main():
     """ Execute the setup commands.
 
     """
-    setup(**_CONFIG)
+    setup(**kwargs)
     return 0 # syccessful termination
 
 if __name__ == "__main__":
