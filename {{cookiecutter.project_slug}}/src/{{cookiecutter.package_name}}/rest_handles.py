@@ -1,8 +1,14 @@
+""" Basic diagnostic handles to the rest API for operations
+
+
+"""
 from aiohttp import web
 
-from servicelib.rest_utils import extract_and_validate
+from servicelib.rest_utils import extract_and_validate, body_to_dict
+from servicelib.rest_responses import wrap_as_envelope
 
 from . import __version__
+
 
 async def check_health(request: web.Request):
     params, query, body = await extract_and_validate(request)
@@ -11,14 +17,14 @@ async def check_health(request: web.Request):
     assert not query
     assert not body
 
-    out = {
+    data = {
         'name':__name__.split('.')[0],
         'version': __version__,
         'status': 'SERVICE_RUNNING',
         'api_version': __version__
     }
 
-    return out
+    return data
 
 
 async def check_action(request: web.Request):
@@ -31,15 +37,12 @@ async def check_action(request: web.Request):
     if params['action'] == 'fail':
         raise ValueError("some randome failure")
 
-    # echo's input FIXME: convert to dic
-    # FIXME: output = fake_schema.dump(body)
-    out = {
-    "path_value" : params.get('action'),
-    "query_value": query.get('data'),
-    "body_value" :{
-        "key1": 1, #body.body_value.key1,
-        "key2": 0  #body.body_value.key2,
-        }
+
+    # echo's input
+    data = {
+        "path_value" : params.get('action'),
+        "query_value": query.get('data'),
+        "body_value" : body_to_dict(body)
     }
 
-    return out
+    return wrap_as_envelope(data=data)

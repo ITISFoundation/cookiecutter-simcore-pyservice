@@ -3,9 +3,9 @@ import logging
 
 from aiohhtp import web
 
+from rest_handles import check_action, check_health
 from servicelib import rest_routes
 from servicelib.application_keys import APP_OPENAPI_SPECS_KEY
-from rest_handles import check_action, check_health
 
 log = logging.getLogger(__name__)
 
