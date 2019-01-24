@@ -22,14 +22,14 @@ def create_application(config: Dict) -> web.Application:
     app = web.Application()
     app[APP_CONFIG_KEY] = config
 
-    testing = config["main"]["testing"]
-    if testing:
+    is_devmode = config["main"]["enabled_developmen_mode"]
+    if is_devmode:
         log.debug("Config:\n%s",
             json.dumps(config, indent=2, sort_keys=True))
 
 
     # TODO: here goes every package/plugin setups
-    setup_rest(app, debug=testing)
+    setup_rest(app, devel=is_devmode)
 
     return app
 

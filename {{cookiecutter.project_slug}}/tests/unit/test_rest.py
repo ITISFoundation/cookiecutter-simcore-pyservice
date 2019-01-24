@@ -34,7 +34,7 @@ def client(loop, aiohttp_unused_port, aiohttp_client, api_specs_dir):
     }
 
     # activates only restAPI sub-modules
-    setup_rest(app, debug=True)
+    setup_rest(app, devel=True)
 
     cli = loop.run_until_complete( aiohttp_client(app, server_kwargs=main_config) )
     return cli

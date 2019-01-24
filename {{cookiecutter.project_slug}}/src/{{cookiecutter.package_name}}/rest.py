@@ -6,6 +6,7 @@
 """
 import asyncio
 import logging
+from pprint import pformat
 
 from aiohttp import web
 from servicelib import openapi
@@ -30,8 +31,31 @@ async def get_specs(location):
     specs = await create_openapi_specs(location)
     return specs
 
-def setup(app: web.Application, *, debug=False):
-    log.debug("Setting up %s %s...", __name__, "[DEBUG]" if debug else "")
+def create_routes(specs):
+    base_path = openapi.get_base_path(specs)
+
+    log.debug("creating %s ", __name__)
+    routes = []
+    path, handle = '/', rest_handlers.check_health
+    operation_id = specs.paths[path].operations['get'].operation_id
+    routes.append( web.get(base_path+path, handle, name=operation_id) )
+
+    path, handle = '/check/{action}', rest_handlers.check_action
+    operation_id = specs.paths[path].operations['post'].operation_id
+    routes.append( web.post(base_path+path, handle, name=operation_id) )
+
+    return routes
+
+def setup(app: web.Application, *, devel=False):
+    """ Subsystem's setup
+
+    :param app: aiohttp application
+    :type app: web.Application
+    :param devel: enables development mode, defaults to False
+    :param devel: bool, optional
+    """
+
+    log.debug("Setting up %s %s...", __name__, "[DEVEL]" if devel else "")
 
     cfg = app[APP_CONFIG_KEY][CONFIG_SECTION_NAME]
 
@@ -50,17 +74,9 @@ def setup(app: web.Application, *, debug=False):
         log.exception("Invalid rest API specs. Rest API is DISABLED")
     else:
         # routes
-        base_path = openapi.get_base_path(specs)
-
-        log.debug("creating %s ", __name__)
-        routes = []
-        path, handle = '/', rest_handlers.check_health
-        operation_id = specs.paths[path].operations['get'].operation_id
-        routes.append( web.get(base_path+path, handle, name=operation_id) )
-
-        path, handle = '/check/{action}', rest_handlers.check_action
-        operation_id = specs.paths[path].operations['post'].operation_id
-        routes.append( web.post(base_path+path, handle, name=operation_id) )
+        routes = create_routes(specs)
+        log.debug("%s API routes:\n%s", CONFIG_SECTION_NAME,  pformat(routes))
+        app.router.add_routes(routes)
 
         # middlewares
         base_path = openapi.get_base_path(specs)

@@ -19,7 +19,7 @@ install_requirements = [
     'aiohttp',
     'trafaret', 'trafaret-config',
     'tenacity',
-    'simcore-service-library', # pip install -e git+https://github.com/ITISFoundation/osparc-simcore.git@master#egg=servicelib\&subdirectory=packages/service-library
+    'simcore-service-library~=0.1', # pip install -e git+https://github.com/ITISFoundation/osparc-simcore.git@master#egg=servicelib\&subdirectory=packages/service-library
 ]
 
 test_requirements = [

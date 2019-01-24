@@ -5,7 +5,7 @@ main:
   host: 127.0.0.1
   port: 8080
   log_level: DEBUG
-  testing: True
+  enabled_developmen_mode: True
 rest:
   version: {{cookiecutter.openapi_specs_version}}
   location: ${OSPARC_SIMCORE_REPO_ROOTDIR}/api/specs/{{cookiecutter.project_slug}}/{{cookiecutter.openapi_specs_version}}/openapi.yaml
