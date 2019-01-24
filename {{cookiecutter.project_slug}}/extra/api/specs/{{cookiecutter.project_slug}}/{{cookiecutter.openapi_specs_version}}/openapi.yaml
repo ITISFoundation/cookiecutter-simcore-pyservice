@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  description: API definition for {{ cookiecutter.distribution_name }} service
-  version: {{ cookiecutter.version }}
   title: {{ cookiecutter.distribution_name }} API
+  version: {{ cookiecutter.version }}
+  description: API definition for {{ cookiecutter.distribution_name }} service
   contact:
     name: IT'IS Foundation
     email: support@simcore.io
@@ -10,6 +10,8 @@ info:
     name: MIT
     url: https://github.com/ITISFoundation/osparc-simcore/blob/master/LICENSE
 servers:
+  - description: API server
+    url: '/{{ cookiecutter.openapi_specs_version }}'
   - description: Development server
     url: http://{host}:{port}/{basePath}
     variables:
@@ -21,75 +23,21 @@ servers:
         enum:
           - {{ cookiecutter.openapi_specs_version }}
         default: {{ cookiecutter.openapi_specs_version }}
-  - description: Production server
-    url: '{publicUrl}/{basePath}'
-    variables:
-      publicUrl:
-        default: 'https://{{ cookiecutter.dockercompose_service_name }}.io'
-      basePath:
-        enum:
-          - v0
-        default: {{ cookiecutter.openapi_specs_version }}
-tags:
-- name: admins
-  description: Secured Admin-only calls
-- name: tests
-  description: Operations available for testing
-- name: users
-  description: Operations available to regular users
 paths:
-  /:
-    get:
-      tags: 
-        - users
-      summary: Service health-check endpoint
-      description: Some general information on the API and state of the service behind
-      operationId: root_get
-      responses:
-        "200":
-          description: Service information
-          content:
-            application/json:
-              schema:
-                $ref: './components/schemas/health_check.yml#/HealthCheckEnveloped'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: './components/schemas/error.yml#/ErrorEnveloped'
-  /check/{action}:
-    get:
-      tags:
-        - tests
-      summary: Test checkpoint to ask server to fail or echo back the transmitted data
-      parameters:
-        - in: query
-          name: data
-          schema:
-            type: string
-        - in: path
-          name: action
-          schema:
-            type: string
-            default: 'echo'
-            enum: ['fail', 'echo']
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: './components/schemas/fake.yml#/FakeType'
-      responses:
-        '200':
-          description: Echoes response based on action
-          content:
-            application/json:
-              schema:
-                $ref: './components/schemas/fake.yml#/FakeEnveloped'
-        default:
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: './components/schemas/error.yml#/ErrorEnveloped'
 
+  # DIAGNOSTICS ---------------------------------------------------------
+  /:
+    $ref: './openapi-diagnostics.yaml#/paths/~1'
+
+  /check/{action}:
+    $ref: './openapi-diagnostics.yaml#/paths/~1check~1{action}'
+
+
+components:
+  responses:
+    DefaultErrorResponse:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: './components/schemas/error.yaml#/ErrorEnveloped'

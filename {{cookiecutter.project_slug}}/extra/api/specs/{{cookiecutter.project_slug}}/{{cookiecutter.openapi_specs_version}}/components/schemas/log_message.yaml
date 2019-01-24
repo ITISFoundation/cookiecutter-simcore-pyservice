@@ -2,14 +2,10 @@ LogMessageEnveloped:
   type: object
   required:
     - data
-    - error
   properties:
     data:
-      $ref: '#/LogMessageType'
-      nullable: true
-      default: null
+      $ref: "#/LogMessageType"
     error:
-      $ref: "./error.yml#/ErrorType"
       nullable: true
       default: null
 
