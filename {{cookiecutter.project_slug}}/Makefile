@@ -26,15 +26,16 @@ endif
 
 DOCKER = docker
 ifeq ($(shell which ${DOCKER}),)
-    tools += $(DOCKER)
+	tools += $(DOCKER)
 endif
-
-VENV_DIR = $(CURDIR)/.venv
 
 PYTHON = python3
 ifeq ($(shell which ${PYTHON}),)
-    tools += $(PYTHON)
+	tools += $(PYTHON)
 endif
+
+VENV_DIR = $(CURDIR)/.venv
+PIP=$(VENV_DIR)/bin/pip3
 
 
 ## -------------------------------
@@ -55,7 +56,7 @@ venv: $(VENV_DIR)
 
 $(VENV_DIR):
 	@$(PYTHON) -m venv "$(VENV_DIR)"
-	@"$(VENV_DIR)/bin/pip3" install --upgrade pip wheel setuptools
+	@. "$(VENV_DIR)/bin/activate" && pip install --upgrade pip wheel setuptools
 	@echo "To activate the virtual environment, execute 'source $(VENV_DIR)/bin/activate'"
 
 .PHONY: venv
@@ -71,7 +72,9 @@ venv: $(VENV_DIR)
 .PHONY: install
 # target: install – Install project sources in "development mode"
 install:
-	@$(PYTHON) setup.py develop
+	pip install -e git+https://github.com/ITISFoundation/osparc-simcore.git@master#egg=servicelib\&subdirectory=packages/service-library
+	pip install -e .
+	#@$(PYTHON) setup.py develop
 
 .PHONY: uninstall
 # target: uninstall – Uninstall project sources
@@ -86,7 +89,8 @@ uninstall:
 # target: test – Runs unit tests [w/ fail fast]
 test:
 	#@$(PYTHON) setup.py pytest --addopts tests/unit
-	"$(VENV_DIR)/bin/pytest" -x --log-level=warning tests/unit
+	#"$(VENV_DIR)/bin/pytest" -x --log-level=warning tests/unit
+	"pytest" -x --log-level=warning tests/unit
 
 
 
