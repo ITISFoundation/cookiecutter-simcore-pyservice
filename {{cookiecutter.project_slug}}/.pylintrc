@@ -1,3 +1,8 @@
+#
+# NOTE: this file can be replaced by `osparc-simcore/.pylintrc` if the service
+# is included in the osparc-simcore repo under `osparc-simcore/services`
+#
+
 [MASTER]
 
 # A comma-separated list of package or module names from where C extensions may

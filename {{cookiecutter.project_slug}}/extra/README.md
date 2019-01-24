@@ -6,5 +6,6 @@ Extra code to **integrate** this service into [osparc-simcore]
 - ``osparc-simcore/services/docker-compose.yml`` section for this service
 
 
+NOTE: keep this directory organized as [osparc-simcore]
 
 [osparc-simcore]:https://github.com/ITISFoundation/osparc-simcore
