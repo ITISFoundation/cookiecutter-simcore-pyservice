@@ -15,8 +15,10 @@ from {{ cookiecutter.package_name }}.cli import main
 
 
 @pytest.fixture
-def pylintrc(osparc_simcore_root_dir):
-    pylintrc = osparc_simcore_root_dir / ".pylintrc"
+def pylintrc(project_slug_dir, osparc_simcore_root_dir):
+    pylintrc =  project_slug_dir/ ".pylintrc"
+    if not pylintrc.exists():
+        pylintrc = osparc_simcore_root_dir / ".pylintrc"
     assert pylintrc.exists()
     return pylintrc
 
