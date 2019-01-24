@@ -83,11 +83,10 @@ uninstall:
 # Testing.
 
 .PHONY: test
-# target: test – Runs unit tests
+# target: test – Runs unit tests [w/ fail fast]
 test:
 	#@$(PYTHON) setup.py pytest --addopts tests/unit
-	"$(VENV_DIR)/bin/pytest" tests/unit
-
+	"$(VENV_DIR)/bin/pytest" -x --log-level=warning tests/unit
 
 
 

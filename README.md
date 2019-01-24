@@ -10,17 +10,25 @@ Install `cookiecutter` command line: `pip install cookiecutter`
 
 
 ## Usage
-Generate a new Cookiecutter template layout: `cookiecutter gh:itisfoundation/cookiecutter-simcore-pyservice`    
+Generate a new Cookiecutter template layout: `cookiecutter gh:itisfoundation/cookiecutter-simcore-pyservice`
 
 
 ## Development
 
 - ``.vscode-template`` are recommended settings for vscode
+- ``{{cookiecutter.project_slug}}/extra`` contains code modules within a tree folder structure equivalent to [osparc-simcore] repo
 
-``` bash
-# creates virtual-environment, and runs current cookie-cutter if 'output' does not exists
-make run
+```console
 
+$ make help
+simcore_service_dummy_service:0.1.0
+
+venv – Create the virtual environment
+install – Install project sources in "development mode"
+uninstall – Uninstall project sources
+test – Runs unit tests [w/ fail fast]
+help – Display all callable targets
+clean – Clean the project's directory
 ```
 
 
