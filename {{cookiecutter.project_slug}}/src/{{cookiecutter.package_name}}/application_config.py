@@ -38,7 +38,6 @@ def create_schema():
         "main": T.Dict({
             "host": T.IP,
             "port": T.Int(),
-            "client_outdir": T.String(),
             "log_level": T.Enum(*logging._nameToLevel.keys()), # pylint: disable=protected-access
             "testing": T.Bool(),
         }),
@@ -57,7 +56,7 @@ def create_schema():
 APP_CONFIG_KEY = APP_CONFIG_KEY
 
 # config/${CLI_DEFAULT_CONFIGFILE}
-CLI_DEFAULT_CONFIGFILE = 'config-prod.yml'
+CLI_DEFAULT_CONFIGFILE = 'config-container-prod.yml'
 
 # schema for app config's startup file
 app_schema = create_schema()

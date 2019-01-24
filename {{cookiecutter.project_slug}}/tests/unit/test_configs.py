@@ -15,7 +15,7 @@ import pytest
 import yaml
 from aiohttp import web
 
-from {{ cookiecutter.package_name }}.cli import run_parser, setup_parser
+from {{ cookiecutter.package_name }}.cli import run_parser, setup_parser, create_default_parser
 from {{ cookiecutter.package_name }}.resources import resources
 from {{ cookiecutter.package_name }}.application_config import create_schema
 
@@ -54,7 +54,7 @@ def devel_environ(env_devel_file):
 @pytest.fixture("session")
 def container_environ(services_docker_compose_file, devel_environ, osparc_simcore_root_dir):
     """ Creates a dict with the environment variables
-        inside of a webserver container
+        inside of a {{ cookiecutter.dockercompose_service_name }} container
     """
     dc = dict()
     with services_docker_compose_file.open() as f:
@@ -64,7 +64,7 @@ def container_environ(services_docker_compose_file, devel_environ, osparc_simcor
         'OSPARC_SIMCORE_REPO_ROOTDIR': str(osparc_simcore_root_dir) # defined if pip install --edit (but not in travis!)
     }
 
-    environ_items = dc["services"]["webserver"]["environment"]
+    environ_items = dc["services"]["{{ cookiecutter.dockercompose_service_name }}"].get("environment", list())
     MATCH = re.compile(r'\$\{(\w+)+')
 
     for item in environ_items:
@@ -84,7 +84,8 @@ def container_environ(services_docker_compose_file, devel_environ, osparc_simcor
                                         for n in resources.listdir("config")
                                         ])
 def test_correctness_under_environ(configfile, container_environ):
-    parser = setup_parser(argparse.ArgumentParser("test-parser"))
+    parser = create_default_parser() or argparse.ArgumentParser("test-parser")
+    setup_parser(parser)
 
     with mock.patch('os.environ', container_environ):
         cmd = ["-c", configfile]
@@ -94,8 +95,8 @@ def test_correctness_under_environ(configfile, container_environ):
             assert value != 'None', "Use instead Null in {} for {}".format(
                 configfile, key)
 
-        # adds some defaults checks here
-        assert config['smtp']['username'] is None
+        # adds some service-specific checks here
+        #   e.g. assert config['smtp']['username'] is None
 
 
 @pytest.fixture("session")

@@ -22,8 +22,7 @@ def create_application(config: Dict) -> web.Application:
     app = web.Application()
     app[APP_CONFIG_KEY] = config
 
-
-    testing = config["main"].get("testing", False)
+    testing = config["main"]["testing"]
     if testing:
         log.debug("Config:\n%s",
             json.dumps(config, indent=2, sort_keys=True))

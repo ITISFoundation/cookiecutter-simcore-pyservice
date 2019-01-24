@@ -82,10 +82,12 @@ uninstall:
 ##
 # Testing.
 
-.PHONY: check
-# target: check – Run tests
-check:
-	$(PYTHON) setup.py pytest --addopts tests/unit
+.PHONY: test
+# target: test – Runs unit tests
+test:
+	#@$(PYTHON) setup.py pytest --addopts tests/unit
+	"$(VENV_DIR)/bin/pytest" tests/unit
+
 
 
 
@@ -107,7 +109,7 @@ help:
 # Cleaners.
 
 .PHONY: clean
-# target: clean – Clean the project's directrory
+# target: clean – Clean the project's directory
 clean:
 	@find "$(CURDIR)" \
 		-name "*.py[cod]" -exec rm -fv {} + -o \

@@ -18,11 +18,20 @@ import {{ cookiecutter.package_name }}
 def here():
     return Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
 
+
+@pytest.fixture(scope='session')
+def project_slug_dir(here):
+    folder = here.parent.parent
+    assert folder.exists()
+    assert any( folder.glob("src/{{ cookiecutter.package_name }}") )
+    return folder
+
 @pytest.fixture(scope='session')
 def package_dir(here):
     dirpath = Path({{ cookiecutter.package_name }}.__file__).resolve().parent
     assert dirpath.exists()
     return dirpath
+
 
 @pytest.fixture(scope='session')
 def osparc_simcore_root_dir(here):
