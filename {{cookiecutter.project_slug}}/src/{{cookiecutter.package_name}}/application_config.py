@@ -39,7 +39,7 @@ def create_schema():
             "host": T.IP,
             "port": T.Int(),
             "log_level": T.Enum(*logging._nameToLevel.keys()), # pylint: disable=protected-access
-            "enabled_developmen_mode": T.Bool(),
+            "enabled_development_mode": T.Bool(),
         }),
         rest_config.CONFIG_SECTION_NAME: rest_config.schema,
         ## Add here more configurations

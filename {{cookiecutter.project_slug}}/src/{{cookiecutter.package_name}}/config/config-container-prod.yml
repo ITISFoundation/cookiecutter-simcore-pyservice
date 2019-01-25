@@ -5,7 +5,7 @@ main:
   host: 0.0.0.0
   port: 8080
   log_level: WARN
-  enabled_developmen_mode: False
+  enabled_development_mode: False
 rest:
   version: {{cookiecutter.openapi_specs_version}}
   location: http://${APIHUB_HOST}:${APIHUB_PORT}/api/specs/{{cookiecutter.project_slug}}/{{cookiecutter.openapi_specs_version}}/openapi.yaml

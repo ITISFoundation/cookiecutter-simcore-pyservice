@@ -22,7 +22,7 @@ def create_application(config: Dict) -> web.Application:
     app = web.Application()
     app[APP_CONFIG_KEY] = config
 
-    is_devmode = config["main"]["enabled_developmen_mode"]
+    is_devmode = config["main"]["enabled_development_mode"]
     if is_devmode:
         log.debug("Config:\n%s",
             json.dumps(config, indent=2, sort_keys=True))
