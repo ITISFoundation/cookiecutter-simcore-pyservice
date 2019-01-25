@@ -15,8 +15,24 @@ Generate a new Cookiecutter template layout: `cookiecutter gh:itisfoundation/coo
 
 ## Development
 
-- ``.vscode-template`` are recommended settings for vscode
-- ``{{cookiecutter.project_slug}}/extra`` contains code modules within a tree folder structure equivalent to [osparc-simcore] repo
+- main ``makefile``
+```console
+make help
+
+install – installs all tooling to run and test current cookie-cutter
+run – runs cookiecutter into output folder
+replay – replays cookiecutter using customized .cookiecutterrc-ignore
+test – tests backed cookie
+venv – Create the virtual environment into venv folder
+requirements – Pip compile requirements.in
+help – Display all callable targets
+clean – cleans projects directory
+clean-force – cleans & removes also venv folder
+```
+
+- template folder:
+  - ``.vscode-template`` are recommended settings for vscode
+  - ``{{cookiecutter.project_slug}}/extra`` contains code modules within a tree folder structure equivalent to [osparc-simcore] repo
 
 ```console
 

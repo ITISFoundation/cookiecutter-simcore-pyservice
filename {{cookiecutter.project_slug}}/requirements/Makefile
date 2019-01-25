@@ -7,7 +7,7 @@ outputs := $(objects:.in=.txt)
 all: $(outputs)
 
 %.txt: %.in
-	pip-compile -v --output-file $@ $<
+	pip-compile --output-file $@ $<
 
 test.txt: base.txt
 
