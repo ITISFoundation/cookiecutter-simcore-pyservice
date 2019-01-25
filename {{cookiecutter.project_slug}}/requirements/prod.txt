@@ -1,8 +1,0 @@
-
-# paths relative to location of setup.py
-.
-
-{{ cookiecutter.simcore_install_root }}packages/service-library/
-{{ cookiecutter.simcore_install_root }}packages/simcore-sdk/
-#{{ cookiecutter.simcore_install_root }}packages/s3wrapper/
-#{{ cookiecutter.simcore_install_root }}packages/director-sdk/python

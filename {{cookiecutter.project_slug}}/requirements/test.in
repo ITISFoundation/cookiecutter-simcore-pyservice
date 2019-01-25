@@ -1,9 +1,6 @@
-## Python requirements for running tests.
-##
-##    pip install --requirement=requirements.txt
-##
-coveralls
-pytest~=4.1
+-r base.txt
+
+pytest
 pytest-aiohttp
 pytest-cov
 pytest-runner

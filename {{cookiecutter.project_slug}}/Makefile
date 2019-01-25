@@ -68,13 +68,21 @@ venv: $(VENV_DIR)
 ##
 # Building and packaging.
 
+.PHONY: requirements
+# target: requirements – Compiles PiP requirements (.in->.txt)
+requirements:
+	pushd requirements && $(MAKE) -f Makefile all && popd
+
 
 .PHONY: install
 # target: install – Install project sources in "development mode"
-install:
-	pip install -e git+https://github.com/ITISFoundation/osparc-simcore.git@master#egg=servicelib\&subdirectory=packages/service-library
-	pip install -e .
+install: requirements/base.txt requirements/test.txt
+	#pip install -r requirements/base.txt
+	#pip install -r requirements/test.txt
 	#@$(PYTHON) setup.py develop
+	pip-sync requirements/base.txt requirements/test.txt
+	pip install -e .
+
 
 .PHONY: uninstall
 # target: uninstall – Uninstall project sources
@@ -91,8 +99,6 @@ test:
 	#@$(PYTHON) setup.py pytest --addopts tests/unit
 	#"$(VENV_DIR)/bin/pytest" -x --log-level=warning tests/unit
 	"pytest" -x --log-level=warning tests/unit
-
-
 
 
 ## -------------------------------

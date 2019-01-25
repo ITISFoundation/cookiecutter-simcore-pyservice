@@ -1,36 +1,31 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-import sys
 import re
+import sys
 from pathlib import Path
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 if sys.version_info.major != 3 and sys.version_info.minor != 6:
     raise RuntimeError("Expected ~=3.6, got %s. Did you forget to activate virtualenv?" % str(sys.version_info))
 
+here = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
 
-current_dir = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
-comment_pattern = re.compile(r'^\s*#')
 
-readme = (current_dir/'README.md').read_text()
+def read_reqs( reqs_path: Path):
+    return re.findall(r'(^[^#-][\w]+[-~>=<.\w]+)', reqs_path.read_text(), re.MULTILINE)
 
-install_requirements = [
-    'aiohttp',
-    'trafaret', 'trafaret-config',
-    'tenacity',
-    'simcore-service-library~=0.1', # pip install -e git+https://github.com/ITISFoundation/osparc-simcore.git@master#egg=servicelib\&subdirectory=packages/service-library
+
+readme = (here/'README.md').read_text()
+
+install_requirements = read_reqs( here / "requirements" / "base.in" ) + [
+    'simcore-service-library~=0.1'
 ]
 
-test_requirements = [
-    'pytest',
-    'pytest-aiohttp', 'pytest-cov', 'pytest-runner'
-    'pylint~=2.2',
-    'openapi_spec_validator',
-    'pyyaml>=4.2b1', # https://nvd.nist.gov/vuln/detail/CVE-2017-18342
-]
+test_requirements = read_reqs( here / "requirements" / "test.in" )
 
-setup_kwargs = dict(
+
+setup(
     name='{{ cookiecutter.distribution_name }}',
     version='{{ cookiecutter.version }}',
     # FIXME: 'Real Name' (github_name) !!
@@ -61,23 +56,9 @@ setup_kwargs = dict(
     extras_require= {
         'test': test_requirements
     },
-    setup_requires=[
-        'pytest-runner',
-    ],
     entry_points={
         'console_scripts': [
             '{{ cookiecutter.command_line_interface_bin_name }} = {{ cookiecutter.package_name }}.cli:main',
         ],
     },
 )
-
-
-def main():
-    """ Execute the setup commands.
-
-    """
-    setup(**setup_kwargs)
-    return 0 # syccessful termination
-
-if __name__ == "__main__":
-    raise SystemExit(main())

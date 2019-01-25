@@ -1,0 +1,10 @@
+pip-tools
+
+# code versioning
+bumpversion
+
+# code formatting
+autopep8
+
+# code replament/rename
+rope
