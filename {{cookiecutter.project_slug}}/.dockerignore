@@ -1,0 +1,10 @@
+.*
+*
+!docker
+!requirements
+!src
+!tests
+!Makefile
+!setup.py
+!README*
+!VERSION
