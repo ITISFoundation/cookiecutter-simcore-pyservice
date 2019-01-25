@@ -76,11 +76,11 @@ requirements:
 
 .PHONY: install
 # target: install – Install project sources in "development mode"
-install: requirements/base.txt requirements/test.txt
+install: requirements/base.txt requirements/ci.txt
 	#pip install -r requirements/base.txt
-	#pip install -r requirements/test.txt
+	#pip install -r requirements/ci.txt
 	#@$(PYTHON) setup.py develop
-	pip-sync requirements/base.txt requirements/test.txt
+	pip-sync requirements/base.txt requirements/ci.txt
 	pip install -e .
 
 

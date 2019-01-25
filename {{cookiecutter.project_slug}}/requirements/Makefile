@@ -9,7 +9,7 @@ all: $(outputs)
 %.txt: %.in
 	pip-compile --output-file $@ $<
 
-test.txt: base.txt
+ci.txt: base.txt
 
 # target: check – Checks whether pip-compile is installed
 check:
