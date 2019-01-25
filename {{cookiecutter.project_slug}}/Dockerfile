@@ -55,7 +55,7 @@ WORKDIR /home/scu
 COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/requirements/base.txt requirements-base.txt
 COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/docker docker
 RUN chmod +x docker/boot.sh &&\
-    chmod +x docker/entrypoint.sh 
+    chmod +x docker/entrypoint.sh
 RUN $PIP install --no-cache-dir -r requirements-base.txt
 
 # --------------------------Development stage -------------------
@@ -92,7 +92,8 @@ COPY --chown=scu:scu packages $HOME/packages
 COPY --chown=scu:scu services/{{ cookiecutter.project_slug }} $HOME/services/{{ cookiecutter.project_slug }}
 
 WORKDIR /home/scu/services/{{ cookiecutter.project_slug }}
-RUN $PIP --no-cache-dir install -r requirements/prod.txt &&\
+RUN $PIP --no-cache-dir install -r requirements/base.txt &&\
+    $PIP --no-cache-dir install . &&\
     $PIP list
 
 #-------------------
