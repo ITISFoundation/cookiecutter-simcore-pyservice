@@ -1,4 +1,4 @@
-# Extra cookies
+# osparc-simcore integration
 
 Extra code to **integrate** this service into [osparc-simcore]
 

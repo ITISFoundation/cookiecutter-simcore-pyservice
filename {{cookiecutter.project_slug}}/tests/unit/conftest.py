@@ -35,7 +35,7 @@ def package_dir(here):
 
 @pytest.fixture(scope='session')
 def osparc_simcore_root_dir(here):
-    root_dir = search_osparc_repo_dir(here) or here.parent.parent / "extra"
+    root_dir = search_osparc_repo_dir(here) or here.parent.parent / "integration"
     assert root_dir and root_dir.exists(), "Is this service within osparc-simcore repo?"
     assert any(root_dir.glob("services/{{ cookiecutter.project_slug }}")), "%s not look like rootdir" % root_dir
     return root_dir
