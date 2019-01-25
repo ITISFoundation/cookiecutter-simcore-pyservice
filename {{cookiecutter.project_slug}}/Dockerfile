@@ -54,6 +54,8 @@ WORKDIR /home/scu
 # install base 3rd party packages to accelerate runtime installs
 COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/requirements/base.txt requirements-base.txt
 COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/docker docker
+RUN chmod +x docker/boot.sh &&\
+    chmod +x docker/entrypoint.sh
 RUN $PIP install --no-cache-dir -r requirements-base.txt
 
 # --------------------------Development stage -------------------
@@ -62,8 +64,8 @@ FROM build as development
 ARG HOST_GID_ARG=1000
 
 # install test 3rd party packages to accelerate runtime installs
-COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/requirements/tests.txt requirements-tests.txt
-RUN $PIP install --no-cache-dir -r requirements-tests.txt
+COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/requirements/ci.txt requirements-ci.txt
+RUN $PIP install --no-cache-dir -r requirements-ci.txt
 
 # in dev mode we give access to `scu` to host's mapped volumes
 RUN addgroup -g $HOST_GID_ARG hgrp &&\
@@ -73,7 +75,7 @@ RUN addgroup -g $HOST_GID_ARG hgrp &&\
 VOLUME /home/scu/packages
 VOLUME /home/scu/services/{{ cookiecutter.project_slug }}/
 
-ENV DEBUG 1
+ENV BOOT_MODE development
 ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
 CMD docker/boot.sh
 
@@ -90,7 +92,8 @@ COPY --chown=scu:scu packages $HOME/packages
 COPY --chown=scu:scu services/{{ cookiecutter.project_slug }} $HOME/services/{{ cookiecutter.project_slug }}
 
 WORKDIR /home/scu/services/{{ cookiecutter.project_slug }}
-RUN $PIP --no-cache-dir install -r requirements/prod.txt &&\
+RUN $PIP install --no-cache-dir -r requirements/base.txt &&\
+    $PIP install --no-cache-dir . &&\
     $PIP list
 
 #-------------------
@@ -108,6 +111,6 @@ RUN . $HOME/.venv/bin/activate; pip list &&\
     rm -rf $HOME/packages &&\
     rm -rf $HOME/services/{{ cookiecutter.project_slug }}
 
-ENV DEBUG 0
+ENV BOOT_MODE production
 ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
 CMD docker/boot.sh

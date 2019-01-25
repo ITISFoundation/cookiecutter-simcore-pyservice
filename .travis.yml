@@ -6,7 +6,8 @@ addons:
       - "python3-pip"
 python:
   - "3.6"
-install: 
+install:
   - "pip install --upgrade pip wheel setuptools"
-  - "pip install -r requirements-dev.txt"
-script: pytest
+  - "pip install -r requirements.txt"
+
+script: pytest -s -c pytest.ini

@@ -1,4 +1,4 @@
-#pylint: disable=W0621 
+#pylint: disable=W0621
 # W0621:Redefining name 'here' from outer scope (line 12)
 import os
 import sys
@@ -52,7 +52,7 @@ def test_project_tree(cookies):
 #        assert subprocess.check_call(['flake8']) == 0
 
 def test_run_pylint(cookies, pylintrc):
-    result = cookies.bake(extra_context={'project_slug': 'pylint_compat', 'package_name': 'package_folder'})    
+    result = cookies.bake(extra_context={'project_slug': 'pylint_compat', 'package_name': 'package_folder'})
     with inside_dir(str(result.project)):
         cmd = 'pylint --rcfile {} -v src/package_folder/'.format(pylintrc.absolute()).split()
         assert subprocess.check_call(cmd) == 0
@@ -63,12 +63,10 @@ def test_run_tests(cookies):
     working_dir = str(result.project)
     commands = (
         "ls -la .",
-        #"python3 -m venv venv",
-        #"ls -l venv/bin/",
-        #"./venv/bin/pip install -r requirements/dev.txt",
-        #"./venv/bin/pytest",
-        "pip install -r requirements/dev.txt",
-        "pytest"
+        "pip install pip-tools",
+        "make requirements",
+        "make install",
+        "make test"
     )
     with inside_dir(working_dir):
         for cmd in commands:

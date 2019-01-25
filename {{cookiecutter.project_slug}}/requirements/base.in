@@ -1,0 +1,8 @@
+# Base dependencies
+
+aiohttp
+trafaret
+trafaret-config
+tenacity
+
+-e git+https://github.com/ITISFoundation/osparc-simcore.git@master#egg=servicelib\&subdirectory=packages/service-library

@@ -1,0 +1,13 @@
+## Startup configuration for the {{ cookiecutter.package_name }} application in production mode
+# within a container
+version: '1.0'
+main:
+  host: 0.0.0.0
+  port: 8080
+  log_level: WARN
+  enabled_development_mode: False
+rest:
+  version: {{cookiecutter.openapi_specs_version}}
+  location: http://${APIHUB_HOST}:${APIHUB_PORT}/api/specs/{{cookiecutter.project_slug}}/{{cookiecutter.openapi_specs_version}}/openapi.yaml
+
+## add here config sections for more service subsystems ...

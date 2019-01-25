@@ -6,10 +6,10 @@ This project uses the Semantic Versioning scheme in conjunction with PEP 0440:
     <https://www.python.org/dev/peps/pep-0440>
 
 
-Major versions introduce significant changes to the API, and backwards 
-compatibility is not guaranteed. 
+Major versions introduce significant changes to the API, and backwards
+compatibility is not guaranteed.
 
-Minor versions are for new features and other backwards-compatible changes to the API. 
+Minor versions are for new features and other backwards-compatible changes to the API.
 
 Patch versions are for bug fixes and internal code changes that do not affect the API.
 
@@ -22,20 +22,8 @@ Package version is defined in the setup.py following the principle of single-sou
 
 """
 import pkg_resources
-import semantic_version
 
-# TODO: introduce metadata info from vcs
+# TODO: introduce metadata info from git
 
-try:
-    # access metadata
-    __version__ = pkg_resources.get_distribution('{{ cookiecutter.package_name }}').version
-    assert __version__=="{{ cookiecutter.version }}", "Did you install this package?"
-except AssertionError as ee:
-    import logging
-    logging.debug(ee)
-
-
-def get_version_object():
-    return semantic_version.Version(__version__)
-
-
+__version__ = pkg_resources.get_distribution('{{ cookiecutter.package_name }}').version
+assert __version__=="{{ cookiecutter.version }}", "Did you `pip install` this package?"

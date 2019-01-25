@@ -1,25 +1,35 @@
-""" Access to data resources installed with this package
+""" Access to data resources installed within this package
 
 """
-from pathlib import Path
-from simcore_servicelib.resources import Resources
+from typing import Dict
+import re
 
-from .settings import RSC_CONFIG_KEY, RSC_OPENAPI_KEY #pylint: disable=unused-import
-from .settings import OAS_ROOT_FILE
+import pkg_resources
 
-resources = Resources(__name__, config_folder='etc/simcore_service_storage')
+from servicelib.resources import ResourcesFacade
 
+_META_PKG_INFO = 'PKG-INFO'
+_meta_info_pattern = re.compile(r'([\w-]+):\s(.*)')
 
-def openapi_path() -> Path:
-    """ Returns path to the roots's oas file
-    Notice that the specs can be split in multiple files. Thisone
-    is the root file and it is normally named as `opeapi.yaml`
-    """
-    return resources.get_path(OAS_ROOT_FILE)
+resources = ResourcesFacade(
+    package_name=__name__,
+    distribution_name="{{ cookiecutter.distribution_name }}",
+    config_folder='config',
+)
+
+def get_distribution_info() -> Dict:
+    """ Returns distributon information, as  provided in setup """
+    dist = pkg_resources.get_distribution('{{ cookiecutter.distribution_name }}')
+    info = {}
+    if dist.has_metadata(_META_PKG_INFO):
+        content= dist.get_metadata(_META_PKG_INFO)
+        found = _meta_info_pattern.findall(content)
+        for key, value in found:
+            info[key] = value
+    return info
 
 
 __all__ = (
     'resources',
-    'RSC_CONFIG_KEY',
-    'RSC_OPENAPI_KEY'
+    'get_distribution_info'
 )

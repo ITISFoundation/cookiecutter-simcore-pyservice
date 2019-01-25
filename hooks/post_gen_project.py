@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import re
-import shutil
 
 
 def fix_template_expansion(content, replacements):

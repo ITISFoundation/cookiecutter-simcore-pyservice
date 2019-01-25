@@ -1,0 +1,14 @@
+# test requirements
+
+# testing
+pytest
+pytest-aiohttp
+pytest-cov
+pytest-runner
+
+# linting
+pylint~=2.2
+
+# misc for fixtures
+openapi_spec_validator
+pyyaml>=4.2b1 # https://nvd.nist.gov/vuln/detail/CVE-2017-18342
