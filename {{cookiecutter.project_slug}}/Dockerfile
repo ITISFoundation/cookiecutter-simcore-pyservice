@@ -59,10 +59,41 @@ RUN chmod +x docker/boot.sh &&\
     chmod +x docker/entrypoint.sh
 RUN $PIP install -r requirements-base.txt
 
+
+# --------------------------Cache stage -------------------
+# CI in master buils & pushes this target to speed-up image build
+#
+FROM build as cache
+
+COPY --chown=scu:scu packages $HOME/packages
+COPY --chown=scu:scu services/{{ cookiecutter.project_slug }} $HOME/services/{{ cookiecutter.project_slug }}
+
+WORKDIR /home/scu/services/{{ cookiecutter.project_slug }}
+RUN $PIP install -r requirements/base.txt &&\
+    $PIP install . &&\
+    $PIP list
+
+WORKDIR /home/scu
+ENV BOOT_MODE production
+
+# --------------------------Production stage -------------------
+# Final cleanup up to reduce image size and startup setup
+#
+FROM cache as production
+
+RUN . $HOME/.venv/bin/activate; pip list &&\
+    rm -rf $HOME/packages &&\
+    rm -rf $HOME/services/{{ cookiecutter.project_slug }} &&\
+    rm -rf /pipcache
+
+ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
+CMD ["/bin/sh", "docker/boot.sh"]
+
+
+
 # --------------------------Development stage -------------------
 # Source code accessible in host but runs in container
 #
-
 FROM build as development
 
 ARG HOST_GID_ARG=1000
@@ -82,33 +113,3 @@ VOLUME /home/scu/services/{{ cookiecutter.project_slug }}/
 ENV BOOT_MODE development
 ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
 CMD docker/boot.sh
-
-
-# --------------------------Cache stage -------------------
-# CI in master buils & pushes this target to speed-up image build
-#
-FROM build as cache
-
-COPY --chown=scu:scu packages $HOME/packages
-COPY --chown=scu:scu services/{{ cookiecutter.project_slug }} $HOME/services/{{ cookiecutter.project_slug }}
-
-WORKDIR /home/scu/services/{{ cookiecutter.project_slug }}
-RUN $PIP install -r requirements/base.txt &&\
-    $PIP install . &&\
-    $PIP list
-
-WORKDIR /home/scu
-ENV BOOT_MODE production
-
-# --------------------------Production stage -------------------
-# Clean up to reduce image size
-#
-FROM cache as production
-
-RUN . $HOME/.venv/bin/activate; pip list &&\
-    rm -rf $HOME/packages &&\
-    rm -rf $HOME/services/{{ cookiecutter.project_slug }} &&\
-    rm -rf /pipcache
-
-ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
-CMD ["/bin/sh", "docker/boot.sh"]
