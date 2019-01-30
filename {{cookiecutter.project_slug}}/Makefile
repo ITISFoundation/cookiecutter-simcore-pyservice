@@ -49,21 +49,15 @@ endif
 
 ## -------------------------------
 # Virtual environment.
-
-.PHONY: venv
-# target: venv – Create the virtual environment
-venv: $(VENV_DIR)
-
 $(VENV_DIR):
 	@$(PYTHON) -m venv "$(VENV_DIR)"
 	@. "$(VENV_DIR)/bin/activate" && pip install --upgrade pip wheel setuptools
 	@echo "To activate the virtual environment, execute 'source $(VENV_DIR)/bin/activate'"
 
 .PHONY: venv
-# Create the virtual environment into venv folder
+# target: venv – Create the virtual environment
 venv: $(VENV_DIR)
 .venv: $(VENV_DIR)
-
 
 ##
 # Building and packaging.
