@@ -36,13 +36,14 @@ endif
 .PHONY: install
 # target: install – installs all tooling to run and test current cookie-cutter
 install: venv
-	. "$(VENV_DIR)/bin/activate" && pip install -r requirements.txt
+	@. "$(VENV_DIR)/bin/activate" && pip install -r requirements.txt
 
 
 #-----------------------------------
 $(OUTPUT_DIR):
-	@mkdir -p $(OUTPUT_DIR)
-	. "$(VENV_DIR)/bin/activate" && cookiecutter --output-dir "$(OUTPUT_DIR)" "$(TEMPLATE)"
+	@mkdir -p $(OUTPUT_DIR)/packages
+	@mkdir -p $(OUTPUT_DIR)/services
+	. "$(VENV_DIR)/bin/activate" && cookiecutter --output-dir "$(OUTPUT_DIR)/services" "$(TEMPLATE)"
 
 .PHONY: run
 # target: run – runs cookiecutter into output folder
@@ -53,15 +54,18 @@ run: install $(OUTPUT_DIR)
 
 #-----------------------------------
 .PHONY: replay
-# target: replay – replays cookiecutter using customized .cookiecutterrc-ignore
+# target: replay – replays cookiecutter in output directory
 replay: .tmp-ran
-	. "$(VENV_DIR)/bin/activate" && cookiecutter --no-input -f --config-file=".cookiecutterrc-ignore"  --output-dir "$(OUTPUT_DIR)" "$(TEMPLATE)"
+	@. "$(VENV_DIR)/bin/activate" && \
+	cookiecutter --no-input -f \
+		--config-file=$(shell find $(OUTPUT_DIR) -name ".cookiecutterrc" )  \
+		--output-dir "$(OUTPUT_DIR)/services" "$(TEMPLATE)"
 
 #-----------------------------------
 .PHONE: test
 # target: test – tests backed cookie
 test: install
-	. "$(VENV_DIR)/bin/activate" && pytest -s -c $(CURDIR)/pytest.ini
+	@. "$(VENV_DIR)/bin/activate" && pytest -s -c $(CURDIR)/pytest.ini
 
 #-----------------------------------
 $(VENV_DIR):
@@ -78,7 +82,7 @@ venv: $(VENV_DIR)
 .PHONY: venv
 # target: requirements – Pip compile requirements.in
 requirements: requirements.in
-	pip-compile -v --output-file requirements.txt requirements.in
+	@pip-compile -v --output-file requirements.txt requirements.in
 	@touch requirements.txt
 
 
