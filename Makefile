@@ -45,12 +45,14 @@ $(OUTPUT_DIR):
 	@mkdir -p $(OUTPUT_DIR)/services
 	. "$(VENV_DIR)/bin/activate" && cookiecutter --output-dir "$(OUTPUT_DIR)/services" "$(TEMPLATE)"
 
-.PHONY: run
+.PHONY: run play
 # target: run – runs cookiecutter into output folder
 run: install $(OUTPUT_DIR)
 	@touch .tmp-ran
 
+play: run
 .tmp-ran: run
+
 
 #-----------------------------------
 .PHONY: replay
