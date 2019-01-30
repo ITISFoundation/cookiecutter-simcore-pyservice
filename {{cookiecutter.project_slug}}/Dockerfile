@@ -39,13 +39,17 @@ EXPOSE 8080
 #       could copy and then python setup.py install OR git clone into the container.
 #       This applies for both
 #
+#  SEE https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management
+#  SEE https://pip.pypa.io/en/stable/reference/pip_install
+#
 FROM base as build
 
 RUN apk add --no-cache \
       postgresql-dev \
-      gcc \
       libc-dev \
-      libffi-dev
+      libffi-dev \
+      gcc \
+      git
 
 RUN python3 -m venv $HOME/.venv &&\
     $PIP install --upgrade \
@@ -73,6 +77,7 @@ COPY --chown=scu:scu packages $HOME/packages
 COPY --chown=scu:scu services/{{ cookiecutter.project_slug }} $HOME/services/{{ cookiecutter.project_slug }}
 
 WORKDIR /home/scu/services/{{ cookiecutter.project_slug }}
+
 RUN $PIP install -r requirements/base.txt &&\
     $PIP install . &&\
     $PIP list &&\
@@ -88,8 +93,10 @@ ENV BOOT_MODE production
 #
 FROM cache as production
 
+RUN apk del --no-cache\
+      gcc \
+      git
 
-# TODO: do we need to activate???
 RUN $PIP list &&\
     rm -rf $HOME/packages &&\
     rm -rf $HOME/services/{{ cookiecutter.project_slug }} &&\
