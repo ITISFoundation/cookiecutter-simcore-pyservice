@@ -1,4 +1,5 @@
 
 module_name = '{{ cookiecutter.project_slug}}'
 
-print('About to implement %s-------------', module_name)
+# TODO: add here some
+# print('About to implement %s-------------', module_name)

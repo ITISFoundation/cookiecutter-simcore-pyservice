@@ -9,7 +9,7 @@ from contextlib import contextmanager
 
 from pathlib import Path
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 @pytest.fixture
 def here():
@@ -30,11 +30,11 @@ def inside_dir(dirpath):
     """
     old_path = os.getcwd()
     try:
-        log.info("CWD now '%s'", dirpath)
+        logger.info("CWD now '%s'", dirpath)
         os.chdir(dirpath)
         yield
     finally:
-        log.info("CWD now '%s'", old_path)
+        logger.info("CWD now '%s'", old_path)
         os.chdir(old_path)
 
 
@@ -70,6 +70,6 @@ def test_run_tests(cookies):
     )
     with inside_dir(working_dir):
         for cmd in commands:
-            log.info("Running '%s' ...", cmd)
+            logger.info("Running '%s' ...", cmd)
             assert subprocess.check_call(cmd.split()) == 0
-            log.info("Done '%s' .", cmd)
+            logger.info("Done '%s' .", cmd)

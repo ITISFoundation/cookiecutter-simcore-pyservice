@@ -29,7 +29,7 @@ from .application_config import CLI_DEFAULT_CONFIGFILE, app_schema
 from .resources import get_distribution_info, resources
 
 here = Path(sys.argv[0] if __name__ =="__main__" else __file__).resolve().parent
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def create_default_parser():
@@ -93,7 +93,7 @@ def config_from_options(options, vars=None):  # pylint: disable=W0622
             if resources.exists(resource_name):
                 options.config = resources.get_path(resource_name)
 
-    log.debug("Loading '%s'", options.config)
+    logger.debug("Loading '%s'", options.config)
 
     return trafaret_config_cmd.config_from_options(options, trafaret=app_schema, vars=vars)
 
