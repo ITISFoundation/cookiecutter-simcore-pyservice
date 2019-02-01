@@ -51,7 +51,9 @@ endif
 # Virtual environment.
 $(VENV_DIR):
 	@$(PYTHON) -m venv "$(VENV_DIR)"
-	@. "$(VENV_DIR)/bin/activate" && pip install --upgrade pip wheel setuptools
+	@. "$(VENV_DIR)/bin/activate" &&\
+		pip install --upgrade pip wheel setuptools &&\
+		pip install pip-tools
 	@echo "To activate the virtual environment, execute 'source $(VENV_DIR)/bin/activate'"
 
 .PHONY: venv
@@ -59,7 +61,7 @@ $(VENV_DIR):
 venv: $(VENV_DIR)
 .venv: $(VENV_DIR)
 
-##
+## -------------------------------
 # Building and packaging.
 
 .PHONY: requirements
@@ -70,10 +72,11 @@ requirements:
 
 .PHONY: install
 # target: install – Install project sources in "development mode"
-install: requirements/base.txt requirements/ci.txt
+install: requirements/base.txt requirements/ci.txt {#
 	#pip install -r requirements/base.txt
 	#pip install -r requirements/ci.txt
 	#@$(PYTHON) setup.py develop
+	#}
 	pip-sync requirements/base.txt requirements/ci.txt
 	pip install -e .
 
@@ -84,14 +87,15 @@ uninstall:
 	@$(PYTHON) setup.py develop --uninstall
 
 
-##
+## -------------------------------
 # Testing.
 
 .PHONY: test
 # target: test – Runs unit tests [w/ fail fast]
-test:
+test:{#
 	#@$(PYTHON) setup.py pytest --addopts tests/unit
 	#"$(VENV_DIR)/bin/pytest" -x --log-level=warning tests/unit
+#}
 	"pytest" -x --log-level=warning tests/unit
 
 
