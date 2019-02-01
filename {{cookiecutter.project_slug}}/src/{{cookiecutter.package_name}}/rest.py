@@ -26,7 +26,7 @@ RETRY_COUNT = 10
 
 @retry( wait=wait_fixed(RETRY_WAIT_SECS),
         stop=stop_after_attempt(RETRY_COUNT),
-        before_sleep=before_sleep_log(log, logging.INFO) )
+        before_sleep=before_sleep_log(logger, logging.INFO) )
 async def get_specs(location):
     specs = await create_openapi_specs(location)
     return specs
