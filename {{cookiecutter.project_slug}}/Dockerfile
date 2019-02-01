@@ -23,6 +23,11 @@ ENV PIP /home/scu/.venv/bin/pip3 --cache-dir=/tmp/.pipcache
 
 EXPOSE 8080
 
+HEALTHCHECK --interval=30s \
+            --timeout=120s \
+            --start-period=30s \
+            --retries=3 \
+            CMD python3 ${HOME}/docker/healthcheck_curl_host.py "http://localhost:8080/{{ cookiecutter.openapi_specs_version }}/"
 
 # -------------------------- Build stage -------------------
 # Common stage between production and development targets
@@ -60,10 +65,9 @@ RUN python3 -m venv $HOME/.venv &&\
 WORKDIR /home/scu
 
 # install base 3rd party packages to accelerate runtime installs
-COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/requirements/base.txt requirements-base.txt
 COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/docker docker
-RUN chmod +x docker/boot.sh &&\
-    chmod +x docker/entrypoint.sh
+COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/requirements/base.txt requirements-base.txt
+
 RUN $PIP install -r requirements-base.txt &&\
     rm -rf /tmp/.pipcache
 
