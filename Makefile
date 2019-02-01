@@ -59,9 +59,9 @@ play: run
 # target: replay – replays cookiecutter in output directory
 replay: .tmp-ran
 	@. "$(VENV_DIR)/bin/activate" && \
-	cookiecutter --no-input -f \
-		--config-file=$(shell find $(OUTPUT_DIR) -name ".cookiecutterrc" )  \
-		--output-dir "$(OUTPUT_DIR)/services" "$(TEMPLATE)"
+		cookiecutter --no-input -f \
+			--config-file="$(shell find $(OUTPUT_DIR) -name ".cookiecutterrc" | tail -n 1)"  \
+			--output-dir="$(OUTPUT_DIR)/services" "$(TEMPLATE)"
 
 #-----------------------------------
 .PHONE: test
