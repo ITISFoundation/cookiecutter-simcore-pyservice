@@ -25,7 +25,7 @@ from servicelib.application_keys import APP_CONFIG_KEY
 from .resources import resources
 from . import rest_config
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def create_schema():

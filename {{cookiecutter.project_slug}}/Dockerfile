@@ -1,4 +1,3 @@
-# TODO: this is still not finished!!
 FROM python:3.6-alpine as base
 
 LABEL maintainer={{ cookiecutter.github_username }}
@@ -17,11 +16,21 @@ RUN apk add --no-cache \
       su-exec
 
 ENV HOME /home/scu
-ENV PIP  /home/scu/.venv/bin/pip3
+# TODO: Workaround for https://github.com/pypa/pip/issues/6197:
+#   - Added explicit --cache-dir that is removed at the end of the build
+#   - NOTE: After every PIP call, add rm -rf /tmp/.pipcache
+ENV PIP /home/scu/.venv/bin/pip3 --cache-dir=/tmp/.pipcache
 
 EXPOSE 8080
 
+HEALTHCHECK --interval=30s \
+            --timeout=120s \
+            --start-period=30s \
+            --retries=3 \
+            CMD python3 ${HOME}/docker/healthcheck_curl_host.py "http://localhost:8080/{{ cookiecutter.openapi_specs_version }}/"
+
 # -------------------------- Build stage -------------------
+# Common stage between production and development targets
 #
 # + /home/scu/              $HOME
 #    + packages
@@ -35,16 +44,20 @@ EXPOSE 8080
 #       could copy and then python setup.py install OR git clone into the container.
 #       This applies for both
 #
+#  SEE https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management
+#  SEE https://pip.pypa.io/en/stable/reference/pip_install
+#
 FROM base as build
 
 RUN apk add --no-cache \
       postgresql-dev \
-      gcc \
       libc-dev \
-      libffi-dev
+      libffi-dev \
+      gcc \
+      git
 
 RUN python3 -m venv $HOME/.venv &&\
-    $PIP install --no-cache-dir --upgrade \
+    $PIP install --upgrade \
       pip \
       wheel \
       setuptools
@@ -52,65 +65,72 @@ RUN python3 -m venv $HOME/.venv &&\
 WORKDIR /home/scu
 
 # install base 3rd party packages to accelerate runtime installs
-COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/requirements/base.txt requirements-base.txt
 COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/docker docker
-RUN chmod +x docker/boot.sh &&\
-    chmod +x docker/entrypoint.sh
-RUN $PIP install --no-cache-dir -r requirements-base.txt
+COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/requirements/base.txt requirements-base.txt
+
+RUN $PIP install -r requirements-base.txt &&\
+    rm -rf /tmp/.pipcache
+
+
+# --------------------------Cache stage -------------------
+# CI in master buils & pushes this target to speed-up image build
+#
+FROM build as cache
+
+COPY --chown=scu:scu packages $HOME/packages
+COPY --chown=scu:scu services/{{ cookiecutter.project_slug }} $HOME/services/{{ cookiecutter.project_slug }}
+
+WORKDIR /home/scu/services/{{ cookiecutter.project_slug }}
+
+RUN $PIP install -r requirements/base.txt &&\
+    $PIP install . &&\
+    $PIP list &&\
+    rm -rf /tmp/.pipcache
+
+WORKDIR /home/scu
+ENV BOOT_MODE production
+
+
+# --------------------------Production stage -------------------
+# Final cleanup up to reduce image size and startup setup
+# TODO: optimize size by uninstalling dev tools? https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management#Remove_a_Package
+#
+FROM cache as production
+
+RUN apk del --no-cache\
+      gcc \
+      git
+
+RUN $PIP list &&\
+    rm -rf $HOME/packages &&\
+    rm -rf $HOME/services/{{ cookiecutter.project_slug }} &&\
+    rm -rf /tmp/.pipcache
+
+ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
+CMD ["/bin/sh", "docker/boot.sh"]
+
 
 # --------------------------Development stage -------------------
+# Source code accessible in host but runs in container
+# Placed at the end to speed-up the build if images targeting production
+#
 FROM build as development
 
 ARG HOST_GID_ARG=1000
 
 # install test 3rd party packages to accelerate runtime installs
 COPY --chown=scu:scu services/{{ cookiecutter.project_slug }}/requirements/ci.txt requirements-ci.txt
-RUN $PIP install --no-cache-dir -r requirements-ci.txt
+RUN $PIP install -r requirements-ci.txt &&\
+    rm -rf /tmp/.pipcache
 
 # in dev mode we give access to `scu` to host's mapped volumes
 RUN addgroup -g $HOST_GID_ARG hgrp &&\
-    addgroup scu hgrp && \
+    addgroup scu hgrp &&\
     chown -R scu:scu $HOME/.venv
 
 VOLUME /home/scu/packages
 VOLUME /home/scu/services/{{ cookiecutter.project_slug }}/
 
 ENV BOOT_MODE development
-ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
-CMD docker/boot.sh
-
-
-# --------------------------Production multi-stage -------------------
-#FROM build as build-production
-FROM build as production
-
-ENV SIMCORE_WEB_CONFIG production
-
-# 2nd party packages
-COPY --chown=scu:scu packages $HOME/packages
-# server
-COPY --chown=scu:scu services/{{ cookiecutter.project_slug }} $HOME/services/{{ cookiecutter.project_slug }}
-
-WORKDIR /home/scu/services/{{ cookiecutter.project_slug }}
-RUN $PIP install --no-cache-dir -r requirements/base.txt &&\
-    $PIP install --no-cache-dir . &&\
-    $PIP list
-
-#-------------------
-#FROM base as production
-# TODO: PC some basic package missing
-
-#COPY --from=build-production --chown=scu:scu $HOME/services/server/boot.sh $HOME
-#COPY --from=build-production --chown=scu:scu $HOME/.venv $HOME/.venv
-#RUN . $HOME/.venv/bin/activate; pip list
-
-# FIXME: temporary solution until found missing packages
-WORKDIR /home/scu
-
-RUN . $HOME/.venv/bin/activate; pip list &&\
-    rm -rf $HOME/packages &&\
-    rm -rf $HOME/services/{{ cookiecutter.project_slug }}
-
-ENV BOOT_MODE production
 ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh" ]
 CMD docker/boot.sh

@@ -18,7 +18,7 @@ from tenacity import before_sleep_log, retry, stop_after_attempt, wait_fixed
 from . import rest_handlers
 from .rest_config import APP_OPENAPI_SPECS_KEY, CONFIG_SECTION_NAME
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 RETRY_WAIT_SECS = 2
@@ -26,7 +26,7 @@ RETRY_COUNT = 10
 
 @retry( wait=wait_fixed(RETRY_WAIT_SECS),
         stop=stop_after_attempt(RETRY_COUNT),
-        before_sleep=before_sleep_log(log, logging.INFO) )
+        before_sleep=before_sleep_log(logger, logging.INFO) )
 async def get_specs(location):
     specs = await create_openapi_specs(location)
     return specs
@@ -34,7 +34,7 @@ async def get_specs(location):
 def create_routes(specs):
     base_path = openapi.get_base_path(specs)
 
-    log.debug("creating %s ", __name__)
+    logger.debug("creating %s ", __name__)
     routes = []
     path, handle = '/', rest_handlers.check_health
     operation_id = specs.paths[path].operations['get'].operation_id
@@ -55,7 +55,7 @@ def setup(app: web.Application, *, devel=False):
     :param devel: bool, optional
     """
 
-    log.debug("Setting up %s %s...", __name__, "[DEVEL]" if devel else "")
+    logger.debug("Setting up %s %s...", __name__, "[DEVEL]" if devel else "")
 
     cfg = app[APP_CONFIG_KEY][CONFIG_SECTION_NAME]
 
@@ -71,11 +71,11 @@ def setup(app: web.Application, *, devel=False):
         # TODO: protocol when some parts are unavailable because of failure
         # Define whether it is critical or this server can still
         # continue working offering partial services
-        log.exception("Invalid rest API specs. Rest API is DISABLED")
+        logger.exception("Invalid rest API specs. Rest API is DISABLED")
     else:
         # routes
         routes = create_routes(specs)
-        log.debug("%s API routes:\n%s", CONFIG_SECTION_NAME,  pformat(routes))
+        logger.debug("%s API routes:\n%s", CONFIG_SECTION_NAME,  pformat(routes))
         app.router.add_routes(routes)
 
         # middlewares

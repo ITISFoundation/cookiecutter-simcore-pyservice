@@ -26,10 +26,9 @@ test_requirements = read_reqs( here / "requirements" / "test.in" )
 
 
 setup(
-    name='{{ cookiecutter.distribution_name }}',
-    version='{{ cookiecutter.version }}',
-    # FIXME: 'Real Name' (github_name) !!
-    author={{ '{0!r}'.format(cookiecutter.full_name).lstrip('ub')}},
+    name="{{ cookiecutter.distribution_name }}",
+    version="{{ cookiecutter.version }}",
+    author="{{ '{full_name} ({github_username})'.format(**cookiecutter) }}",
     description={{ '{0!r}'.format(cookiecutter.project_short_description).lstrip('ub') }},
     classifiers=[
         'Development Status :: 1 - Planning',
@@ -58,7 +57,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            '{{ cookiecutter.command_line_interface_bin_name }} = {{ cookiecutter.package_name }}.cli:main',
+            "{{ cookiecutter.command_line_interface_bin_name }} = {{ cookiecutter.package_name }}.cli:main",
         ],
     },
 )

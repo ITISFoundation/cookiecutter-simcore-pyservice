@@ -6,30 +6,37 @@ import json
 import logging
 from typing import Dict
 from aiohttp import web
+from aiohttp_swagger import setup_swagger
 
 from .rest import setup_rest
 from .application_config import APP_CONFIG_KEY
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def create_application(config: Dict) -> web.Application:
     """
         Initializes service
     """
-    log.debug("Initializing app ... ")
+    logger.debug("Initializing app ... ")
 
     app = web.Application()
     app[APP_CONFIG_KEY] = config
 
     is_devmode = config["main"]["enabled_development_mode"]
     if is_devmode:
-        log.debug("Config:\n%s",
+        logger.debug("Config:\n%s",
             json.dumps(config, indent=2, sort_keys=True))
 
 
     # TODO: here goes every package/plugin setups
     setup_rest(app, devel=is_devmode)
+    setup_swagger(app,
+                  title="{{ cookiecutter.distribution_name }}",
+                  description="{{ cookiecutter.project_short_description }}",
+                  api_version="{{ cookiecutter.version }}",
+                  contact="{{ '{full_name} ({github_username})'.format(**cookiecutter) }}",
+                  swagger_url="/api/{{ cookiecutter.openapi_specs_version }}/doc")
 
     return app
 
@@ -38,7 +45,7 @@ def run_service(config: Dict) -> web.Application:
     """ Runs service = creates and runs application
 
     """
-    log.debug("Serving app ... ")
+    logger.debug("Serving app ... ")
 
     app = create_application(config)
     web.run_app(app,

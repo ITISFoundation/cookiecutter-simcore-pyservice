@@ -11,9 +11,9 @@ then
   echo "INFO: Workdir :`pwd`"
 
   cd $HOME/services/{{ cookiecutter.project_slug }}
-  pip install -r requirements/ci.txt
-  pip install -e .
-  pip list
+  $PIP install -r requirements/ci.txt
+  $PIP install -e .
+  $PIP list
 
   cd $HOME/
   {{ cookiecutter.command_line_interface_bin_name }} --config config-host-dev.yaml
