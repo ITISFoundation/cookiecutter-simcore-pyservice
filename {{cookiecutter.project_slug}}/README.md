@@ -1,5 +1,9 @@
 # {{ cookiecutter.project_slug }}
 
+[![](https://images.microbadger.com/badges/image/itisfoundation/{{ cookiecutter.project_slug }}.svg)](https://microbadger.com/images/itisfoundation/{{ cookiecutter.project_slug }} "")
+[![](https://images.microbadger.com/badges/version/itisfoundation/{{ cookiecutter.project_slug }}.svg)](https://microbadger.com/images/itisfoundation/{{ cookiecutter.project_slug }} "")
+[![](https://images.microbadger.com/badges/commit/itisfoundation/{{ cookiecutter.project_slug }}.svg)](https://microbadger.com/images/itisfoundation/{{ cookiecutter.project_slug }} "")
+
 {{ cookiecutter.project_short_description }}
 
 
