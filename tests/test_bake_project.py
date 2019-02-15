@@ -38,6 +38,8 @@ def inside_dir(dirpath):
         os.chdir(old_path)
 
 
+
+
 def test_project_tree(cookies):
     result = cookies.bake(extra_context={'project_slug': 'test_project'})
     assert result.exit_code == 0
@@ -67,6 +69,22 @@ def test_run_tests(cookies):
         "make requirements",
         "make install",
         "make test"
+    )
+    with inside_dir(working_dir):
+        for cmd in commands:
+            logger.info("Running '%s' ...", cmd)
+            assert subprocess.check_call(cmd.split()) == 0
+            logger.info("Done '%s' .", cmd)
+
+
+def test_docker_builds(cookies):
+    result = cookies.bake(extra_context={'project_slug': 'dummy-project'})
+    working_dir = str(result.project)
+    commands = (
+        "ls -la .",
+        "pip install pip-tools",
+        "make requirements",
+        "docker build -f Dockerfile -t dummy-project:prod --target production ../../"
     )
     with inside_dir(working_dir):
         for cmd in commands:
