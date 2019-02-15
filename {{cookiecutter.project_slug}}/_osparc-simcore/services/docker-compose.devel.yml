@@ -1,0 +1,11 @@
+version: '3.4'
+services:
+  {{ cookiecutter.dockercompose_service_name }}:
+    image: services_{{ cookiecutter.dockercompose_service_name }}:dev
+    build:
+      target: development
+    volumes:
+      - ./{{ cookiecutter.project_slug }}:/devel/services/{{ cookiecutter.project_slug }}
+      - ../packages:/devel/packages
+    stdin_open: true
+    tty: true

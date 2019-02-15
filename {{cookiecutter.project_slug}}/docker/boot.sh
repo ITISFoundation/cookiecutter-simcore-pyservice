@@ -1,32 +1,41 @@
 #!/bin/sh
 #
-echo "Activating python virtual env..."
-source $HOME/.venv/bin/activate
 
-echo "Booting {{ cookiecutter.project_slug }} in ${BOOT_MODE} mode ..."
+# BOOTING application ---------------------------------------------
+echo "Booting in ${MY_BOOT_MODE} mode ..."
 
-if [[ ${BOOT_MODE} == "development" ]]
+APP_CONFIG=config-host-dev.yaml
+
+if [[ ${MY_BUILD_TARGET} == "development" ]]
+  echo "  User    :`id $(whoami)`"
+  echo "  Workdir :`pwd`"
+  echo "  Environment :"
+  printenv  | sed 's/=/: /' | sed 's/^/    /' | sort
+
+  $MY_PIP install --user -e services/{{ cookiecutter.project_slug }}
+
+  echo "  Python :"
+  python --version | sed 's/^/    /'
+  which python | sed 's/^/    /'
+  echo "  PIP :"
+  $MY_PIP list | sed 's/^/    /'
+
+  APP_CONFIG=config-host-dev.yaml
+
+elif [[ ${MY_BUILD_TARGET} == "production" ]]
+  APP_CONFIG=config-host-dev.yaml
+
+fi
+
+
+# RUNNING application ----------------------------------------
+if [[ ${BOOT_MODE} == "debug" ]]
 then
-  echo "INFO: User    :`id $(whoami)`"
-  echo "INFO: Workdir :`pwd`"
-
-  cd $HOME/services/{{ cookiecutter.project_slug }}
-  $PIP install -r requirements/ci.txt
-  $PIP install -e .
-  $PIP list
-
-  cd $HOME/
-  {{ cookiecutter.command_line_interface_bin_name }} --config config-host-dev.yaml
-
-elif [[ ${BOOT_MODE} == "debug" ]]
-then
-  echo "INFO: Debugger attached: https://docs.python.org/3.6/library/pdb.html#debugger-commands  ..."
-  python -c "import pdb, {{ cookiecutter.package_name }}.cli; pdb.run('{{ cookiecutter.package_name }}.cli.main([\'-c\',\'config-container-prod.yaml\'])')"
-
-elif [[ ${BOOT_MODE} == "production" ]]
-then
-  {{ cookiecutter.command_line_interface_bin_name }} --config config-container-prod.yaml
+  echo "Debugger attached: https://docs.python.org/3.6/library/pdb.html#debugger-commands  ..."
+  echo "Running: import pdb, {{ cookiecutter.package_name }}.cli; pdb.run('{{ cookiecutter.package_name }}.cli.main([\'-c\',\'${APP_CONFIG}\'])')"
+  python -c "import pdb, {{ cookiecutter.package_name }}.cli; \
+             pdb.run('{{ cookiecutter.package_name }}.cli.main([\'-c\',\'${APP_CONFIG}\'])')"
 
 else
-  echo "ERROR: ${BOOT_MODE} is invalid booting mode. Expecting development, debug or production"
+  {{ cookiecutter.command_line_interface_bin_name }} --config $APP_CONFIG
 fi
