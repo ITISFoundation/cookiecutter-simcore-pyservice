@@ -78,7 +78,7 @@ def test_run_tests(cookies):
             logger.info("Done '%s' .", cmd)
 
 
-
+@pytest.mark.skip("Under development")
 def test_docker_builds(cookies, tmpdir):
     # bakes cookie within osparc-simcore tree structure
     result = cookies.bake(extra_context={'project_slug': 'dummy-project'})
