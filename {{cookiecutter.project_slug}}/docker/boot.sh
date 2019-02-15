@@ -7,6 +7,7 @@ echo "Booting in ${MY_BOOT_MODE} mode ..."
 APP_CONFIG=config-host-dev.yaml
 
 if [[ ${MY_BUILD_TARGET} == "development" ]]
+then
   echo "  User    :`id $(whoami)`"
   echo "  Workdir :`pwd`"
   echo "  Environment :"
@@ -23,6 +24,7 @@ if [[ ${MY_BUILD_TARGET} == "development" ]]
   APP_CONFIG=config-host-dev.yaml
 
 elif [[ ${MY_BUILD_TARGET} == "production" ]]
+then
   APP_CONFIG=config-host-dev.yaml
 
 fi

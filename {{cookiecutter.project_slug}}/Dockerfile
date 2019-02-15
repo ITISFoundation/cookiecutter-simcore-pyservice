@@ -23,6 +23,7 @@ EXPOSE 8080
 
 {#
   Actual file is not added since we want to have it mounted in devel mode
+  FIXME: wrong path for devel mode!??
 #}
 HEALTHCHECK --interval=30s \
             --timeout=120s \
@@ -59,7 +60,7 @@ WORKDIR /build
 COPY  services/{{ cookiecutter.project_slug }}/requirements/*.txt \
       services/{{ cookiecutter.project_slug }}/requirements/
 
-RUN $MY_PIP install --user \
+RUN $MY_PIP install \
       -r services/{{ cookiecutter.project_slug }}/requirements/base.txt
 
 
@@ -80,7 +81,7 @@ COPY --chown=scu:scu services/{{ cookiecutter.project_slug }} /build/services/{{
 WORKDIR /build/services/{{ cookiecutter.project_slug }}
 
 {# NOTE: notice that tests are not installed within the docker. Currently pytest runs in the host #}
-RUN $MY_PIP install --user . &&\
+RUN $MY_PIP install . &&\
     $MY_PIP list -vv
 
 
