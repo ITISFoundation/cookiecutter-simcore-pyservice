@@ -4,7 +4,8 @@
 # BOOTING application ---------------------------------------------
 echo "Booting in ${MY_BOOT_MODE} mode ..."
 
-APP_CONFIG=config-host-dev.yaml
+PATH="$HOME/.local/bin:$PATH"
+export PATH
 
 if [[ ${MY_BUILD_TARGET} == "development" ]]
 then
@@ -12,16 +13,18 @@ then
   echo "  Workdir :`pwd`"
   echo "  Environment :"
   printenv  | sed 's/=/: /' | sed 's/^/    /' | sort
+  #--------------------
 
+  APP_CONFIG=config-host-dev.yaml
   $MY_PIP install --user -e services/{{ cookiecutter.project_slug }}
 
+  #--------------------
   echo "  Python :"
   python --version | sed 's/^/    /'
   which python | sed 's/^/    /'
   echo "  PIP :"
   $MY_PIP list | sed 's/^/    /'
 
-  APP_CONFIG=config-host-dev.yaml
 
 elif [[ ${MY_BUILD_TARGET} == "production" ]]
 then
