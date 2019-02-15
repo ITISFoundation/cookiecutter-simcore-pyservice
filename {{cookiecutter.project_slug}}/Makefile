@@ -99,6 +99,20 @@ test:{#
 	"pytest" -x --log-level=warning tests/unit
 
 
+
+## -------------------------------
+# Docker.
+
+
+.PHONY: docker-build
+# target: docker-build - Build image from scratch
+docker-build:
+	$(DOCKER) build \
+		-f "$(CURDIR)/Dockerfile" -t "$(PACKAGE_NAME):prod" \
+		--target production \
+		$(CURDIR)/../../
+
+
 ## -------------------------------
 # Auxiliary targets.
 
