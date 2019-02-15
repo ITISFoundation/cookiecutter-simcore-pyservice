@@ -1,13 +1,14 @@
 #pylint: disable=W0621
 # W0621:Redefining name 'here' from outer scope (line 12)
-import os
-import sys
-import pytest
-import subprocess
 import logging
+import os
+import shutil
+import subprocess
+import sys
 from contextlib import contextmanager
-
 from pathlib import Path
+
+import pytest
 
 logger = logging.getLogger(__name__)
 
@@ -77,16 +78,24 @@ def test_run_tests(cookies):
             logger.info("Done '%s' .", cmd)
 
 
-def test_docker_builds(cookies):
+
+def test_docker_builds(cookies, tmpdir):
+    # bakes cookie within osparc-simcore tree structure
     result = cookies.bake(extra_context={'project_slug': 'dummy-project'})
     working_dir = str(result.project)
+
+    tmpdir.mkdir("packages").join("dummy.py").write("import os")
+    new_working_dir = tmpdir.mkdir("services") / os.path.basename(working_dir)
+    shutil.move(working_dir, new_working_dir)
+
+    # ----
     commands = (
         "ls -la .",
         "pip install pip-tools",
         "make requirements",
         "docker build -f Dockerfile -t dummy-project:prod --target production ../../"
     )
-    with inside_dir(working_dir):
+    with inside_dir(new_working_dir):
         for cmd in commands:
             logger.info("Running '%s' ...", cmd)
             assert subprocess.check_call(cmd.split()) == 0
