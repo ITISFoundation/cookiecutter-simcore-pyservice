@@ -82,7 +82,8 @@ def test_run_tests(cookies):
             logger.info("Done '%s' .", cmd)
 
 
-{#
+
+
 @pytest.mark.skip("TODO: Under development")
 def test_build_docker(cookies, tmpdir):
     # TODO: check build target base, build, cache, prod and devel
@@ -113,5 +114,5 @@ def test_build_docker(cookies, tmpdir):
 def test_run_docker(cookies, tmpdir):
     # check state after boot
     # check run permissions `simcore-service-storage --help`
+    # check load config `simcore-service-storage -c `
     pass
-#}

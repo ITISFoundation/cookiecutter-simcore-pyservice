@@ -76,7 +76,7 @@ WORKDIR /build/services/{{ cookiecutter.project_slug }}
 
 {# NOTE: notice that tests are not installed within the docker. Currently pytest runs in the host #}
 RUN $MY_PIP install . &&\
-    $MY_PIP list -vv
+    $MY_PIP list -v
 
 
 # --------------------------Production stage -------------------
@@ -127,11 +127,12 @@ FROM build as development
 ENV MY_BUILD_TARGET development
 ENV MY_BOOT_MODE development
 
+{# TODO: Now could be moved after build to speed up ... or keep it here to enforce developer to build at least once }
 {# Reuses build-stage data #}
 #  TODO: consider installing tooling in a separate virtualenv?
 #  TODO: really necesary???
 WORKDIR /build
-RUN $MY_PIP install -r services/{{ cookiecutter.project_slug }}/requirements/ci.txt #}
+{# RUN $MY_PIP install -r services/{{ cookiecutter.project_slug }}/requirements/ci.txt #}
 
 WORKDIR /devel
 VOLUME  /devel/packages
