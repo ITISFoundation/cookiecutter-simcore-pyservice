@@ -7,11 +7,12 @@
 #   *runs* as non-root user [scu]
 #
 echo "Entrypoint for stage ${MY_BUILD_TARGET} ..."
-echo "  User    :`id $(whoami)`"
-echo "  Workdir :`pwd`"
 
 if [[ ${MY_BUILD_TARGET} == "development" ]]
 then
+    echo "  User    :`id $(whoami)`"
+    echo "  Workdir :`pwd`"
+
     # NOTE: expects docker run ... -v $(pwd):/devel/services/{{ cookiecutter.project_slug }}
     DEVEL_MOUNT=/devel/services/{{ cookiecutter.project_slug }}
 
@@ -27,6 +28,7 @@ then
 fi
 
 
+{# TODO: Add option to add access to docker sockets or not #}
 # Appends docker group if socket is mounted
 DOCKER_MOUNT=/var/run/docker.sock
 

@@ -104,6 +104,7 @@ test:{#
 # Docker.
 
 
+{#TODO: build/run instead via docker-compose to centralize calls#}
 .PHONY: docker-build
 # target: docker-build - Build image from scratch
 docker-build:

@@ -15,21 +15,14 @@ RUN adduser -D -u 8004 -s /bin/sh -h /home/scu scu
 RUN apk add --no-cache \
       su-exec
 
+ENV PATH "/home/scu/.local/bin:$PATH"
+
 # All MY_ variables are customized
 ENV MY_PIP pip3 --no-cache-dir
 ENV MY_BUILD_TARGET base
 
 EXPOSE 8080
 
-{#
-  Actual file is not added since we want to have it mounted in devel mode
-  FIXME: wrong path for devel mode!??
-#}
-HEALTHCHECK --interval=30s \
-            --timeout=120s \
-            --start-period=30s \
-            --retries=3 \
-            CMD python3 ~/docker/healthcheck.py "http://localhost:8080/{{ cookiecutter.openapi_specs_version }}/"
 
 # -------------------------- Build stage -------------------
 # Installs build/package management tools and third party dependencies
@@ -42,6 +35,7 @@ FROM base as build
 
 ENV MY_BUILD_TARGET build
 
+{#TODO: install and uninstall lists#}
 RUN apk add --no-cache \
       postgresql-dev \
       libc-dev \
@@ -90,7 +84,7 @@ RUN $MY_PIP install . &&\
 # Runs as scu (non-root user)
 #
 #  + /home/scu     $HOME = WORKDIR
-#    + docker
+#    + services/{{ cookiecutter.project_slug }} [scu:scu]
 #
 FROM cache as production
 {# TODO: optimize size by uninstalling dev tools? https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management#Remove_a_Package #}
@@ -109,6 +103,13 @@ RUN apk del --no-cache\
       gcc \
       git
 
+
+HEALTHCHECK --interval=30s \
+            --timeout=120s \
+            --start-period=30s \
+            --retries=3 \
+            CMD ["python3", "services/{{ cookiecutter.project_slug }}/docker/healthcheck.py", "http://localhost:8080/{{ cookiecutter.openapi_specs_version }}/"]
+
 ENTRYPOINT [ "/bin/sh", "services/{{ cookiecutter.project_slug }}/docker/entrypoint.sh" ]
 CMD ["/bin/sh", "services/{{ cookiecutter.project_slug }}/docker/boot.sh"]
 
@@ -126,7 +127,7 @@ FROM build as development
 ENV MY_BUILD_TARGET development
 ENV MY_BOOT_MODE development
 
-{# Reuses build-stage data
+{# Reuses build-stage data #}
 #  TODO: consider installing tooling in a separate virtualenv?
 #  TODO: really necesary???
 WORKDIR /build

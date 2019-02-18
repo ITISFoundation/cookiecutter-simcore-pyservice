@@ -1,5 +1,9 @@
-#pylint: disable=W0621
-# W0621:Redefining name 'here' from outer scope (line 12)
+# pylint:disable=wildcard-import
+# pylint:disable=unused-import
+# pylint:disable=unused-variable
+# pylint:disable=unused-argument
+# pylint:disable=redefined-outer-name
+
 import logging
 import os
 import shutil
@@ -78,8 +82,11 @@ def test_run_tests(cookies):
             logger.info("Done '%s' .", cmd)
 
 
-@pytest.mark.skip("Under development")
-def test_docker_builds(cookies, tmpdir):
+{#
+@pytest.mark.skip("TODO: Under development")
+def test_build_docker(cookies, tmpdir):
+    # TODO: check build target base, build, cache, prod and devel
+
     # bakes cookie within osparc-simcore tree structure
     result = cookies.bake(extra_context={'project_slug': 'dummy-project'})
     working_dir = str(result.project)
@@ -100,3 +107,11 @@ def test_docker_builds(cookies, tmpdir):
             logger.info("Running '%s' ...", cmd)
             assert subprocess.check_call(cmd.split()) == 0
             logger.info("Done '%s' .", cmd)
+
+
+@pytest.mark.skip("TODO: Under development")
+def test_run_docker(cookies, tmpdir):
+    # check state after boot
+    # check run permissions `simcore-service-storage --help`
+    pass
+#}
