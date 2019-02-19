@@ -24,10 +24,6 @@ ifeq ($(shell which ${SED}),)
 	tools += $(SED)
 endif
 
-DOCKER = docker
-ifeq ($(shell which ${DOCKER}),)
-	tools += $(DOCKER)
-endif
 
 PYTHON = python3
 ifeq ($(shell which ${PYTHON}),)
@@ -98,20 +94,6 @@ test:{#
 #}
 	"pytest" -x --log-level=warning tests/unit
 
-
-
-## -------------------------------
-# Docker.
-
-
-{#TODO: build/run instead via docker-compose to centralize calls#}
-.PHONY: docker-build
-# target: docker-build - Build image from scratch
-docker-build:
-	$(DOCKER) build \
-		-f "$(CURDIR)/Dockerfile" -t "$(PACKAGE_NAME):prod" \
-		--target production \
-		$(CURDIR)/../../
 
 
 ## -------------------------------
