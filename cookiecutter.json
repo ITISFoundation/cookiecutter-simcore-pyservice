@@ -1,18 +1,23 @@
 {
     "full_name": "Your name",
     "github_username": "Your github username",
+
     "project_name": "Name of the project",
     "project_short_description": "A short description of the project",
     "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
-    "dockercompose_service_name": "{{ cookiecutter.project_slug }}",
-    "dockercompose_service_api_port": "8080",
+
     "package_name": "simcore_service_{{ cookiecutter.project_slug|replace('-','_') }}",
     "distribution_name": "simcore-service-{{ cookiecutter.project_slug }}",
     "command_line_interface_bin_name": "{{ cookiecutter.distribution_name }}",
-    "simcore_install_root": ["../../", "git+https://github.com/ITISFoundation/osparc-simcore.git@master"],
-    "release_date": "{% now 'local' %}",
+
     "version": "0.1.0",
     "openapi_specs_version": "v{{ cookiecutter.version.split('.')[0] }}",
-    "sdk_package_name": "simcore_{{ cookiecutter.project_slug|replace('-','_') }}_sdk",
+
+    "dockercompose_service_name": "{{ cookiecutter.project_slug }}",
+    "dockercompose_service_api_port": "8080",
+
+    "enable_aiohttp_swagger": ["false", "true"],
+
+    "year": "{% now 'utc', '%Y' %}",
     "_extensions": ["jinja2_time.TimeExtension"]
 }

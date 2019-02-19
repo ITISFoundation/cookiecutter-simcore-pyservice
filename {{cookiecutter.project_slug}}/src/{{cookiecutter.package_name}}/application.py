@@ -6,7 +6,9 @@ import json
 import logging
 from typing import Dict
 from aiohttp import web
+{%- if cookiecutter.enable_aiohttp_swagger == 'true' %}
 from aiohttp_swagger import setup_swagger
+{%- endif %}
 
 from .rest import setup_rest
 from .application_config import APP_CONFIG_KEY
@@ -31,13 +33,15 @@ def create_application(config: Dict) -> web.Application:
 
     # TODO: here goes every package/plugin setups
     setup_rest(app, devel=is_devmode)
+
+    {%- if cookiecutter.enable_aiohttp_swagger == 'true' %}
     setup_swagger(app,
                   title="{{ cookiecutter.distribution_name }}",
                   description="{{ cookiecutter.project_short_description }}",
                   api_version="{{ cookiecutter.version }}",
                   contact="{{ '{full_name} ({github_username})'.format(**cookiecutter) }}",
                   swagger_url="/api/{{ cookiecutter.openapi_specs_version }}/doc")
-
+    {%- endif %}
     return app
 
 
