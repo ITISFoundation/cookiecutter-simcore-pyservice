@@ -28,10 +28,10 @@ SUCCESS, UNHEALTHY = 0, 1
 
  # Disabled if boots with debugger
 if os.environ.get("BOOT_MODE") == "debug":
-    print(SUCCESS)
+    sys.exit(SUCCESS)
 else:
     ok = urlopen("{host}{baseurl}".format(
         host=sys.argv[1],
         baseurl=os.environ.get("SIMCORE_NODE_BASEPATH", "")) # adds a base-path if defined in environ
         ).getcode() == 200
-    print(SUCCESS if ok else UNHEALTHY)
+    sys.exit(SUCCESS if ok else UNHEALTHY)
