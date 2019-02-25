@@ -10,7 +10,6 @@ echo "Entrypoint for stage ${MY_BUILD_TARGET} ..."
 echo "  User    :`id $(whoami)`"
 echo "  Workdir :`pwd`"
 
-USERNAME=scu
 
 if [[ ${MY_BUILD_TARGET} == "development" ]]
 then
@@ -26,7 +25,7 @@ then
 
     if [[ $USERID -eq 0 ]]
     then
-        addgroup $USERNAME root
+        addgroup scu root
     else
         # take host's credentials in myu
         if [[ -z "$GROUPNAME" ]]
@@ -34,11 +33,11 @@ then
             GROUPNAME=myu
             addgroup -g $GROUPID $GROUPNAME
         else
-            addgroup $USERNAME $GROUPNAME
+            addgroup scu $GROUPNAME
         fi
 
-        deluser $USERNAME &> /dev/null
-        adduser -u $USERID -G $GROUPNAME -D -s /bin/sh $USERNAME
+        deluser scu &> /dev/null
+        adduser -u $USERID -G $GROUPNAME -D -s /bin/sh scu
     fi
 fi
 
@@ -59,8 +58,8 @@ then
         # if group already exists in container, then reuse name
         GROUPNAME=$(getent group ${GROUPID} | cut -d: -f1)
     fi
-    addgroup $USERNAME $GROUPNAME
+    addgroup scu $GROUPNAME
 fi
 
 echo "Starting boot ..."
-su-exec $SERNAME "$@"
+su-exec scu "$@"
