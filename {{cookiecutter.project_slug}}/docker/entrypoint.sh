@@ -7,12 +7,13 @@
 #   *runs* as non-root user [scu]
 #
 echo "Entrypoint for stage ${MY_BUILD_TARGET} ..."
+echo "  User    :`id $(whoami)`"
+echo "  Workdir :`pwd`"
+
+USERNAME=scu
 
 if [[ ${MY_BUILD_TARGET} == "development" ]]
 then
-    echo "  User    :`id $(whoami)`"
-    echo "  Workdir :`pwd`"
-
     # NOTE: expects docker run ... -v $(pwd):/devel/services/{{ cookiecutter.project_slug }}
     DEVEL_MOUNT=/devel/services/{{ cookiecutter.project_slug }}
 
@@ -21,10 +22,24 @@ then
 
     USERID=$(stat -c %u $DEVEL_MOUNT)
     GROUPID=$(stat -c %g $DEVEL_MOUNT)
+    GROUPNAME=$(getent group ${GROUPID} | cut -d: -f1)
 
-    deluser scu &> /dev/null
-    addgroup -g $GROUPID scu
-    adduser -u $USERID -G scu -D -s /bin/sh scu
+    if [[ $USERID -eq 0 ]]
+    then
+        addgroup $USERNAME root
+    else
+        # take host's credentials in myu
+        if [[ -z "$GROUPNAME" ]]
+        then
+            GROUPNAME=myu
+            addgroup -g $GROUPID $GROUPNAME
+        else
+            addgroup $USERNAME $GROUPNAME
+        fi
+
+        deluser $USERNAME &> /dev/null
+        adduser -u $USERID -G $GROUPNAME -D -s /bin/sh $USERNAME
+    fi
 fi
 
 
@@ -38,14 +53,14 @@ then
     GROUPID=$(stat -c %g $DOCKER_MOUNT)
     GROUPNAME=docker
 
-    addgroup -g $GROUPID $GROUPNAME
+    addgroup -g $GROUPID $GROUPNAME &> /dev/null
     if [[ $? -gt 0 ]]
     then
         # if group already exists in container, then reuse name
         GROUPNAME=$(getent group ${GROUPID} | cut -d: -f1)
     fi
-    addgroup scu $GROUPNAME
+    addgroup $USERNAME $GROUPNAME
 fi
 
 echo "Starting boot ..."
-su-exec scu "$@"
+su-exec $SERNAME "$@"

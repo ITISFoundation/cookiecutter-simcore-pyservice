@@ -3,12 +3,12 @@
 
 # BOOTING application ---------------------------------------------
 echo "Booting in ${MY_BOOT_MODE} mode ..."
+echo "  User    :`id $(whoami)`"
+echo "  Workdir :`pwd`"
 
 
 if [[ ${MY_BUILD_TARGET} == "development" ]]
 then
-  echo "  User    :`id $(whoami)`"
-  echo "  Workdir :`pwd`"
   echo "  Environment :"
   printenv  | sed 's/=/: /' | sed 's/^/    /' | sort
   #--------------------
