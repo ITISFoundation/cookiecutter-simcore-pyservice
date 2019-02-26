@@ -2,29 +2,29 @@
 #
 
 # BOOTING application ---------------------------------------------
-echo "Booting in ${MY_BOOT_MODE} mode ..."
+echo "Booting in ${SC_BOOT_MODE} mode ..."
 echo "  User    :`id $(whoami)`"
 echo "  Workdir :`pwd`"
 
 
-if [[ ${MY_BUILD_TARGET} == "development" ]]
+if [[ ${SC_BUILD_TARGET} == "development" ]]
 then
   echo "  Environment :"
   printenv  | sed 's/=/: /' | sed 's/^/    /' | sort
   #--------------------
 
   APP_CONFIG=config-host-dev.yaml
-  $MY_PIP install --user -e services/{{ cookiecutter.project_slug }}
+  $SC_PIP install --user -e services/{{ cookiecutter.project_slug }}
 
   #--------------------
   echo "  Python :"
   python --version | sed 's/^/    /'
   which python | sed 's/^/    /'
   echo "  PIP :"
-  $MY_PIP list | sed 's/^/    /'
+  $SC_PIP list | sed 's/^/    /'
 
 
-elif [[ ${MY_BUILD_TARGET} == "production" ]]
+elif [[ ${SC_BUILD_TARGET} == "production" ]]
 then
   APP_CONFIG=config-host-dev.yaml
 

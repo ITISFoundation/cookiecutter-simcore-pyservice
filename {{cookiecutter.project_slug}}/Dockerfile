@@ -17,9 +17,9 @@ RUN apk add --no-cache \
 
 ENV PATH "/home/scu/.local/bin:$PATH"
 
-# All MY_ variables are customized
-ENV MY_PIP pip3 --no-cache-dir
-ENV MY_BUILD_TARGET base
+# All SC_ variables are customized
+ENV SC_PIP pip3 --no-cache-dir
+ENV SC_BUILD_TARGET base
 
 EXPOSE 8080
 
@@ -33,7 +33,7 @@ EXPOSE 8080
 #  SEE https://pip.pypa.io/en/stable/reference/pip_install #}
 FROM base as build
 
-ENV MY_BUILD_TARGET build
+ENV SC_BUILD_TARGET build
 
 {#TODO: install and uninstall lists#}
 RUN apk add --no-cache \
@@ -43,7 +43,7 @@ RUN apk add --no-cache \
       gcc \
       git
 
-RUN $MY_PIP install --upgrade \
+RUN $SC_PIP install --upgrade \
       pip \
       wheel \
       setuptools
@@ -54,7 +54,7 @@ WORKDIR /build
 COPY  services/{{ cookiecutter.project_slug }}/requirements/*.txt \
       services/{{ cookiecutter.project_slug }}/requirements/
 
-RUN $MY_PIP install \
+RUN $SC_PIP install \
       -r services/{{ cookiecutter.project_slug }}/requirements/base.txt
 
 
@@ -66,7 +66,7 @@ RUN $MY_PIP install \
 #
 FROM build as cache
 
-ENV MY_BUILD_TARGET cache
+ENV SC_BUILD_TARGET cache
 
 {# TODO: Consider .dockerignore filter to avoid #}
 COPY --chown=scu:scu packages /build/packages
@@ -75,8 +75,8 @@ COPY --chown=scu:scu services/{{ cookiecutter.project_slug }} /build/services/{{
 WORKDIR /build/services/{{ cookiecutter.project_slug }}
 
 {# NOTE: notice that tests are not installed within the docker. Currently pytest runs in the host #}
-RUN $MY_PIP install . &&\
-    $MY_PIP list -v
+RUN $SC_PIP install . &&\
+    $SC_PIP list -v
 
 
 # --------------------------Production stage -------------------
@@ -89,8 +89,8 @@ RUN $MY_PIP install . &&\
 FROM cache as production
 {# TODO: optimize size by uninstalling dev tools? https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management#Remove_a_Package #}
 
-ENV MY_BUILD_TARGET production
-ENV MY_BOOT_MODE production
+ENV SC_BUILD_TARGET production
+ENV SC_BOOT_MODE production
 
 WORKDIR /home/scu
 
@@ -124,15 +124,15 @@ CMD ["/bin/sh", "services/{{ cookiecutter.project_slug }}/docker/boot.sh"]
 #
 FROM build as development
 
-ENV MY_BUILD_TARGET development
-ENV MY_BOOT_MODE development
+ENV SC_BUILD_TARGET development
+ENV SC_BOOT_MODE development
 
 {# TODO: Now could be moved after build to speed up ... or keep it here to enforce developer to build at least once }
 {# Reuses build-stage data #}
 #  TODO: consider installing tooling in a separate virtualenv?
 #  TODO: really necesary???
 WORKDIR /build
-{# RUN $MY_PIP install -r services/{{ cookiecutter.project_slug }}/requirements/ci.txt #}
+{# RUN $SC_PIP install -r services/{{ cookiecutter.project_slug }}/requirements/ci.txt #}
 
 WORKDIR /devel
 VOLUME  /devel/packages

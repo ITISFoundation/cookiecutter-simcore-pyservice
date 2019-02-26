@@ -6,12 +6,12 @@
 # - Notice that the container *starts* as --user [default root] but
 #   *runs* as non-root user [scu]
 #
-echo "Entrypoint for stage ${MY_BUILD_TARGET} ..."
+echo "Entrypoint for stage ${SC_BUILD_TARGET} ..."
 echo "  User    :`id $(whoami)`"
 echo "  Workdir :`pwd`"
 
 
-if [[ ${MY_BUILD_TARGET} == "development" ]]
+if [[ ${SC_BUILD_TARGET} == "development" ]]
 then
     # NOTE: expects docker run ... -v $(pwd):/devel/services/{{ cookiecutter.project_slug }}
     DEVEL_MOUNT=/devel/services/{{ cookiecutter.project_slug }}
