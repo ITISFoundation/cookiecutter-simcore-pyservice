@@ -73,7 +73,7 @@ def test_no_tags(cookies):
         for fname in files:
             fpath = os.path.join(root, fname)
             with open(fpath) as f:
-                for lineno, line in f:
+                for lineno, line in enumerate(f):
                     assert "TODO" not in line, "{}:{}".format(fpath, lineno)
 
 def test_run_tests(cookies):
