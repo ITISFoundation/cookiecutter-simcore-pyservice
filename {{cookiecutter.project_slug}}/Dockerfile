@@ -103,9 +103,9 @@ RUN apk del --no-cache\
       gcc \
       git
 
-
+{# Guarantees startup time limit per service. See https://12factor.net/ #}
 HEALTHCHECK --interval=30s \
-            --timeout=120s \
+            --timeout=20s \
             --start-period=30s \
             --retries=3 \
             CMD ["python3", "services/{{ cookiecutter.project_slug }}/docker/healthcheck.py", "http://localhost:8080/{{ cookiecutter.openapi_specs_version }}/"]
@@ -127,10 +127,9 @@ FROM build as development
 ENV SC_BUILD_TARGET development
 ENV SC_BOOT_MODE development
 
-{# TODO: Now could be moved after build to speed up ... or keep it here to enforce developer to build at least once }
-{# Reuses build-stage data #}
-#  TODO: consider installing tooling in a separate virtualenv?
-#  TODO: really necesary???
+{# TODO: Now could be moved after build to speed up ... or keep it here to enforce developer to build at least once. Reuses build-stage data #}
+{# TODO: consider installing tooling in a separate virtualenv? #}
+{# TODO: really necesary??? #}
 WORKDIR /build
 {# RUN $SC_PIP install -r services/{{ cookiecutter.project_slug }}/requirements/ci.txt #}
 
