@@ -29,17 +29,17 @@ EXPOSE 8080
 #
 # + /build             WORKDIR
 #
-{# SEE https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management
-#  SEE https://pip.pypa.io/en/stable/reference/pip_install #}
+{# SEE https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management #}
+{#  SEE https://pip.pypa.io/en/stable/reference/pip_install              #}
 FROM base as build
 
 ENV SC_BUILD_TARGET build
 
-{#TODO: install and uninstall lists#}
+{# TODO: install and uninstall lists #}
 RUN apk add --no-cache \
-      postgresql-dev \
-      libc-dev \
-      libffi-dev \
+      # postgresql-dev \
+      # libc-dev \
+      # libffi-dev \
       gcc \
       git
 
@@ -87,7 +87,6 @@ RUN $SC_PIP install . &&\
 #    + services/{{ cookiecutter.project_slug }} [scu:scu]
 #
 FROM cache as production
-{# TODO: optimize size by uninstalling dev tools? https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management#Remove_a_Package #}
 
 ENV SC_BUILD_TARGET production
 ENV SC_BOOT_MODE production
@@ -99,11 +98,12 @@ RUN mkdir -p services/{{ cookiecutter.project_slug }} &&\
     mv /build/services/{{ cookiecutter.project_slug }}/docker services/{{ cookiecutter.project_slug }}/docker &&\
     rm -rf /build
 
+{# TODO: optimize size by uninstalling dev tools? https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management#Remove_a_Package   #}
 RUN apk del --no-cache\
       gcc \
       git
 
-{# Guarantees startup time limit per service. See https://12factor.net/ #}
+{# Shall guarantee maximum startup time limit per service. See https://12factor.net/ #}
 HEALTHCHECK --interval=30s \
             --timeout=20s \
             --start-period=30s \
@@ -137,5 +137,5 @@ WORKDIR /devel
 VOLUME  /devel/packages
 VOLUME  /devel/services/{{ cookiecutter.project_slug }}/
 
-ENTRYPOINT [ "/bin/sh", "services/{{ cookiecutter.project_slug }}/docker/entrypoint.sh" ]
+ENTRYPOINT ["/bin/sh", "services/{{ cookiecutter.project_slug }}/docker/entrypoint.sh"]
 CMD ["/bin/sh", "services/{{ cookiecutter.project_slug }}/docker/boot.sh"]
