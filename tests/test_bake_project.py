@@ -67,14 +67,18 @@ def test_run_pylint(cookies, pylintrc):
 
 
 def test_no_tags(cookies):
+    exclude = ['.pylintrc']
     result = cookies.bake(extra_context={
                           'project_slug': 'myproject', 'package_name': 'package_folder'})
     for root, dirs, files in os.walk(result.project):
         for fname in files:
-            fpath = os.path.join(root, fname)
-            with open(fpath) as f:
-                for lineno, line in enumerate(f):
-                    assert "TODO" not in line, "{}:{}".format(fpath, lineno)
+            if fname not in exclude:
+                fpath = os.path.join(root, fname)
+                with open(fpath) as fh:
+                    for lineno, line in enumerate(fh):
+                        assert "TODO" not in line, "{}:{}".format(fpath, lineno)
+        # skips
+        dirs[:] = [n for n in dirs if not n.startswith('.')]
 
 def test_run_tests(cookies):
     result = cookies.bake(extra_context={'project_slug': 'dummy-project'})
