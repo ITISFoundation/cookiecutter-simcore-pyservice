@@ -58,12 +58,23 @@ def test_project_tree(cookies):
 #    with inside_dir(str(result.project)):
 #        assert subprocess.check_call(['flake8']) == 0
 
+# TODO: use pylint via package instead of application entrypoint
 def test_run_pylint(cookies, pylintrc):
     result = cookies.bake(extra_context={'project_slug': 'pylint_compat', 'package_name': 'package_folder'})
     with inside_dir(str(result.project)):
         cmd = 'pylint --rcfile {} -v src/package_folder/'.format(pylintrc.absolute()).split()
         assert subprocess.check_call(cmd) == 0
 
+
+def test_no_tags(cookies):
+    result = cookies.bake(extra_context={
+                          'project_slug': 'myproject', 'package_name': 'package_folder'})
+    for root, dirs, files in os.walk(result.project):
+        for fname in files:
+            fpath = os.path.join(root, fname)
+            with open(fpath) as f:
+                for lineno, line in f:
+                    assert "TODO" not in line, "{}:{}".format(fpath, lineno)
 
 def test_run_tests(cookies):
     result = cookies.bake(extra_context={'project_slug': 'dummy-project'})
