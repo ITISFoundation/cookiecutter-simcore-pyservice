@@ -23,7 +23,7 @@ def pylintrc(project_slug_dir, osparc_simcore_root_dir):
     return pylintrc
 
 
-# TODO: check pytst-pylint and replace this test
+{# TODO: check pytst-pylint and replace this test #}
 def test_run_pylint(pylintrc, package_dir):
     cmd = 'pylint -j 2 --rcfile {} -v {}'.format(pylintrc, package_dir)
     assert subprocess.check_call(cmd.split()) == 0
@@ -35,12 +35,12 @@ def test_main(here): # pylint: disable=unused-variable
     with pytest.raises(SystemExit) as excinfo:
         main("--help".split())
 
-    # TODO: check at least config file
+    {# TODO: check at least config file #}
     assert excinfo.value.code == 0
 
 def test_no_pdbs_in_place(package_dir):
-    # TODO: add also test_dir excluding this function!?
-    # TODO: it can be commented!
+    {# TODO: add also test_dir excluding this function!? #}
+    {# TODO: it can be commented! #}
     MATCH = re.compile(r'pdb.set_trace()')
     EXCLUDE = ["__pycache__", ".git"]
     for root, dirs, files in os.walk(package_dir):

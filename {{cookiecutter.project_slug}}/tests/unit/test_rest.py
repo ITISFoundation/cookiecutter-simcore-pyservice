@@ -78,8 +78,7 @@ async def test_check_action(client):
     assert data
     assert not error
 
-    # TODO: validate response against specs
-
+    {# TODO: validate response against specs #}
     assert data['path_value'] == ACTION
     assert data['query_value'] == QUERY
     assert data['body_value'] == FAKE

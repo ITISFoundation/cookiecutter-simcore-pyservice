@@ -31,7 +31,7 @@ def create_application(config: Dict) -> web.Application:
             json.dumps(config, indent=2, sort_keys=True))
 
 
-    # TODO: here goes every package/plugin setups
+    {# TODO: here goes every package/plugin setups #}
     setup_rest(app, devel=is_devmode)
 
     {%- if cookiecutter.enable_aiohttp_swagger == 'true' %}
