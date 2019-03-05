@@ -52,4 +52,4 @@ def test_no_pdbs_in_place(package_dir):
                 assert not found, "pbd.set_trace found in %s" % pypth
         dirs[:] = [d for d in dirs if d not in EXCLUDE]
 
-# TODO run entrypoint with subprocess since it check dependency conflicts upon load_entrypoint!
+{# TODO run entrypoint with subprocess since it check dependency conflicts upon load_entrypoint! #}

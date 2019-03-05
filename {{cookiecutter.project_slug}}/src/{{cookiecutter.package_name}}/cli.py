@@ -116,7 +116,7 @@ def main(args=None):
     setup_parser(args_parser)
     config = run_parser(args_parser, args)
 
-    # TODO: improve keys!
+    {# TODO: improve keys! #}
     log_level = config["main"]["log_level"]
     logging.basicConfig(level=getattr(logging, log_level))
 
