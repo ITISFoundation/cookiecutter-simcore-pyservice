@@ -8,13 +8,13 @@
     depends on the subsystem and not the other way around.
 
     The app configuration is created before the application instance exists.
-
-
-TODO: can this be done using declarative programming??
-TODO: add more strict checks with re
-TODO: add support for versioning.
+ 
+{# TODO: can this be done using declarative programming?? #}
+{# TODO: add more strict checks with re #}
+{# TODO: add support for versioning.
     - check shema fits version
-    - parse/format version in schema
+    - parse/format version in schema 
+#}
 """
 import logging
 

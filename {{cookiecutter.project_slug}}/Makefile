@@ -24,10 +24,6 @@ ifeq ($(shell which ${SED}),)
 	tools += $(SED)
 endif
 
-DOCKER = docker
-ifeq ($(shell which ${DOCKER}),)
-	tools += $(DOCKER)
-endif
 
 PYTHON = python3
 ifeq ($(shell which ${PYTHON}),)
@@ -97,6 +93,7 @@ test:{#
 	#"$(VENV_DIR)/bin/pytest" -x --log-level=warning tests/unit
 #}
 	"pytest" -x --log-level=warning tests/unit
+
 
 
 ## -------------------------------

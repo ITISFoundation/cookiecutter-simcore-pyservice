@@ -64,13 +64,13 @@ def setup(app: web.Application, *, devel=False):
         location = cfg["location"]
         specs = loop.run_until_complete( get_specs(location) )
 
-        # TODO: What if many specs to expose? v0, v1, v2 ... perhaps a dict instead?
+        {# TODO: What if many specs to expose? v0, v1, v2 ... perhaps a dict instead? #}
         app[APP_OPENAPI_SPECS_KEY] = specs # validated openapi specs
 
     except openapi.OpenAPIError:
-        # TODO: protocol when some parts are unavailable because of failure
+        {# TODO: protocol when some parts are unavailable because of failure
         # Define whether it is critical or this server can still
-        # continue working offering partial services
+        # continue working offering partial services #}
         logger.exception("Invalid rest API specs. Rest API is DISABLED")
     else:
         # routes

@@ -20,10 +20,9 @@ Build metadata (e.g. git commit id, build id, ...) can be appended with a plus, 
 Package version is defined in the setup.py following the principle of single-sourcing (option 5):
 <https://packaging.python.org/guides/single-sourcing-package-version/>
 
+{# TODO: introduce metadata info from git #}
 """
 import pkg_resources
-
-# TODO: introduce metadata info from git
 
 __version__ = pkg_resources.get_distribution('{{ cookiecutter.package_name }}').version
 assert __version__=="{{ cookiecutter.version }}", "Did you `pip install` this package?"

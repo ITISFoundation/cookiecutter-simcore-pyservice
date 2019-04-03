@@ -19,12 +19,28 @@ To generate a new cookiecutter template layout just type
 ```
 and answer the questions.
 
+
+## Backed project
+
+Infrastructure:
+  - [osparc-simcore]-compatible project skeleton for python services
+  - service-level makefile (type ``make help``)
+  - [folder]({{cookiecutter.project_slug}}/extra_osparc-simcore) with stub code to integrate service in [osparc-simcore] framework
+  - Multi-stage [Dockerfile]({{cookiecutter.project_slug}}/Dockerfile) with different boot modes and healt-check
+  -
+  - ...
+
+Service Features:
+  - [aiohttp] server
+  - [OpenAPI](https://www.openapis.org/) compatible RESTful API
+  - ...
+
 Then, to work in the backed project, this is the standard wordflow
 ``` console
   $ cd my project
   $ make help
 
-  # Create and activate virtual envi
+  # Create and activate virtual environment
   $ make venv
   $ source .venv/bin/activate
 
@@ -52,26 +68,6 @@ clean – cleans projects directory
 clean-force – cleans & removes also venv folder
 ```
 
-#### Features of the backed project
-  - [aiohttp] server
-  - [OpenAPI](https://www.openapis.org/) compatible RESTful API
-  -
-  - Predefined project skeleton
-  - ``.vscode-template`` are recommended settings for vscode
-  - ``{{cookiecutter.project_slug}}/extra`` contains code modules within a tree folder structure equivalent to [osparc-simcore] repo
-  - makefile
-  ```console
-  $ make help
-  simcore_service_dummy_service:0.1.0
-
-  venv – Create the virtual environment
-  install – Install project sources in "development mode"
-  uninstall – Uninstall project sources
-  test – Runs unit tests [w/ fail fast]
-  help – Display all callable targets
-  clean – Clean the project's directory
-  ```
-
 ---
 
 ## Acknoledgements
@@ -81,6 +77,6 @@ This template was built upon ideas/snippets borrowed from already existing great
 This project is licensed under the terms of the [MIT License](/LICENSE)
 
 
-[aiohptt]:https://aiohttp.readthedocs.io/en/stable/
+[aiohttp]:https://aiohttp.readthedocs.io/en/stable/
 [cookiecutter]:https://cookiecutter.readthedocs.io
 [osparc-simcore]:https://github.com/ITISFoundation/osparc-simcore

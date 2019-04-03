@@ -1,0 +1,29 @@
+{
+    "atomKeymap.promptV3Features": true,
+    "editor.formatOnPaste": true,
+    "editor.insertSpaces": false,
+    "editor.multiCursorModifier": "ctrlCmd",
+    "editor.renderWhitespace": "all",
+    "editor.tabSize": 2,
+    "explorer.confirmDelete": false,
+    "files.exclude": {
+        "**/*.pyc": true,
+        "**/.DS_Store": true,
+        "**/.git": true,
+        "**/.hg": true,
+        "**/.svn": true,
+        "**/CVS": true
+    },
+    "git.enabled": true,
+    "git.path": "%ConEmuDir%\\vendor\\git-for-windows\\cmd\\git.exe",
+    "latex-workshop.view.pdf.viewer": "tab",
+    "python.linting.enabled": true,
+    "python.pythonPath": "C:\\Users\\crespo\\Miniconda3\\envs\\py3\\python.exe",
+    "python.unitTest.unittestEnabled": true,
+    "terminal.integrated.shell.windows": "cmd.exe",
+    "terminal.integrated.shellArgs.windows": [
+        "/k",
+        "%ConEmuDir%\\vendor\\init.bat"
+    ],
+    "workbench.iconTheme": "vscode-icons"
+}

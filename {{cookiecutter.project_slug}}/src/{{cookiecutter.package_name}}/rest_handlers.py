@@ -9,6 +9,7 @@ from servicelib.rest_responses import wrap_as_envelope
 
 from . import __version__
 
+{# TODO: define enum for status #}
 
 async def check_health(request: web.Request):
     params, query, body = await extract_and_validate(request)
@@ -20,7 +21,7 @@ async def check_health(request: web.Request):
     data = {
         'name':__name__.split('.')[0],
         'version': __version__,
-        'status': 'SERVICE_RUNNING', # TODO: check state!
+        'status': 'SERVICE_RUNNING', {# TODO: check state! #}
         'api_version': __version__
     }
 
