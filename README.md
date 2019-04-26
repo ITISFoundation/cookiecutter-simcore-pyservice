@@ -1,5 +1,6 @@
 # Cookiecutter simcore-pyservice
 [![Build Status](https://travis-ci.com/ITISFoundation/cookiecutter-simcore-pyservice.svg?branch=master)](https://travis-ci.com/ITISFoundation/cookiecutter-simcore-pyservice)
+[![Requirements Status](https://requires.io/github/ITISFoundation/cookiecutter-simcore-pyservice/requirements.svg?branch=master)](https://requires.io/github/ITISFoundation/cookiecutter-simcore-pyservice/requirements/?branch=master)
 
 Cookiecutter template for [osparc-simcore]'s python-based services
 
