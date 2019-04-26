@@ -26,12 +26,12 @@
   "[makefile]": {
     "editor.insertSpaces": false
   },
-  "python.unitTest.pyTestArgs": [
+  "python.testing.pyTestArgs": [
     "services/web/server"
   ],
-  "python.unitTest.unittestEnabled": false,
-  "python.unitTest.nosetestsEnabled": false,
-  "python.unitTest.pyTestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.nosetestsEnabled": false,
+  "python.testing.pyTestEnabled": true,
   "python.pythonPath": ".venv/bin/python",
   "restructuredtext.confPath": "",
   "autoDocstring.docstringFormat": "sphinx"
