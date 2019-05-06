@@ -68,19 +68,14 @@ requirements:
 
 .PHONY: install
 # target: install – Install project sources in "development mode"
-install: requirements/base.txt requirements/ci.txt {#
-	#pip install -r requirements/base.txt
-	#pip install -r requirements/ci.txt
-	#@$(PYTHON) setup.py develop
-	#}
-	pip-sync requirements/base.txt requirements/ci.txt
-	pip install -e .
+install: requirements/_test.txt
+	$(PIP) install -r requirements/dev.txt
 
 
 .PHONY: uninstall
 # target: uninstall – Uninstall project sources
 uninstall:
-	@$(PYTHON) setup.py develop --uninstall
+	$(PIP) uninstall -y -r requirements/dev.txt
 
 
 ## -------------------------------

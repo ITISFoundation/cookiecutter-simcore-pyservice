@@ -1,4 +1,6 @@
-# Base dependencies
+#
+# Specifies third-party dependencies for '{{cookiecutter.project_slug}}'
+#
 
 aiohttp
 aiohttp-swagger   # Swagger API Documentation builder for aiohttp server.

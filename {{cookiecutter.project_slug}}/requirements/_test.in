@@ -1,4 +1,9 @@
-# test requirements
+#
+# Specifies dependencies required to run '{{cookiecutter.project_slug}}'
+#
+
+# frozen specs
+-r _base.txt
 
 # testing
 pytest
@@ -7,7 +12,7 @@ pytest-cov
 pytest-runner
 
 # linting
-pylint~=2.2
+pylint
 
 # misc for fixtures
 openapi_spec_validator

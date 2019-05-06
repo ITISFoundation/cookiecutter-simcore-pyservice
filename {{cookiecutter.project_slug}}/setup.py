@@ -18,11 +18,11 @@ def read_reqs( reqs_path: Path):
 
 readme = (here/'README.md').read_text()
 
-install_requirements = read_reqs( here / "requirements" / "base.in" ) + [
+install_requirements = read_reqs( here / "requirements" / "_base.txt" ) + [
     'simcore-service-library~=0.1'
 ]
 
-test_requirements = read_reqs( here / "requirements" / "test.in" )
+test_requirements = read_reqs( here / "requirements" / "_test.txt" )
 
 
 setup(
@@ -52,9 +52,6 @@ setup(
     install_requires= install_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    extras_require= {
-        'test': test_requirements
-    },
     entry_points={
         'console_scripts': [
             "{{ cookiecutter.command_line_interface_bin_name }} = {{ cookiecutter.package_name }}.cli:main",
