@@ -26,12 +26,6 @@
   "[makefile]": {
     "editor.insertSpaces": false
   },
-<<<<<<< HEAD
-  "python.testing.pyTestArgs": [
-    "services/web/server"
-  ],
-=======
->>>>>>> master
   "python.testing.unittestEnabled": false,
   "python.testing.nosetestsEnabled": false,
   "python.testing.pyTestEnabled": true,
