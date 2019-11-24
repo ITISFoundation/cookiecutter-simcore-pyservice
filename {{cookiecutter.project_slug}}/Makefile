@@ -1,124 +1,62 @@
+#
+# Targets for DEVELOPMENT of {{ cookiecutter.project_name }}
+#
+
+# Makefile config
+.DEFAULT_GOAL := help
 SHELL = /bin/bash
 
-##
-# Definitions.
+# Custom variables
+APP_NAME     := $(notdir $(CURDIR))
+APP_CLI_NAME := {{ cookiecutter.command_line_interface_bin_name }}
+APP_VERSION  = $(shell cat VERSION)
 
-.SUFFIXES:
-
-PACKAGE_NAME = {{ cookiecutter.package_name }}
-PACKAGE_VERSION = $(shell cat VERSION)
-
-srcdir = $(CURDIR)/src/$(PACKAGE_NAME)
+ROOT_DIR     = $(abspath $(CURDIR)/../../)
+VENV_DIR    ?= $(abspath $(ROOT_DIR)/.venv)
 
 
-## Tools
-tools =
-
-ifeq ($(shell uname -s),Darwin)
-	SED = gsed
-else
-	SED = sed
-endif
-
-ifeq ($(shell which ${SED}),)
-	tools += $(SED)
-endif
-
-
-PYTHON = python3
-ifeq ($(shell which ${PYTHON}),)
-	tools += $(PYTHON)
-endif
-
-VENV_DIR = $(CURDIR)/.venv
-PIP=$(VENV_DIR)/bin/pip3
-
-
-## -------------------------------
-# All.
-
-all: help
-ifdef tools
-	$(error "Can't find tools:${tools}")
-endif
-
-
-## -------------------------------
-# Virtual environment.
-$(VENV_DIR):
-	@$(PYTHON) -m venv "$(VENV_DIR)"
-	@. "$(VENV_DIR)/bin/activate" &&\
-		pip install --upgrade pip wheel setuptools &&\
-		pip install pip-tools
-	@echo "To activate the virtual environment, execute 'source $(VENV_DIR)/bin/activate'"
-
-.PHONY: venv
-# target: venv – Create the virtual environment
-venv: $(VENV_DIR)
-.venv: $(VENV_DIR)
-
-## -------------------------------
-# Building and packaging.
-
-.PHONY: requirements
-# target: requirements – Compiles PiP requirements (.in->.txt)
-requirements:
-	pushd requirements && $(MAKE) -f Makefile all && popd
+.PHONY: devenv
+devenv: ## build development environment (using main services/docker-compose-build.yml)
+	@$(MAKE) -C ${ROOT_DIR} $@
 
 
 .PHONY: install
-# target: install – Install project sources in "development mode"
-install: requirements/base.txt requirements/ci.txt {#
-	#pip install -r requirements/base.txt
-	#pip install -r requirements/ci.txt
-	#@$(PYTHON) setup.py develop
-	#}
-	pip-sync requirements/base.txt requirements/ci.txt
-	pip install -e .
+install: ## install app in edit mode for development [DEV]
+	# installing in edit mode
+	@$(VENV_DIR)/bin/pip3 install -r requirements/dev.txt
 
 
-.PHONY: uninstall
-# target: uninstall – Uninstall project sources
-uninstall:
-	@$(PYTHON) setup.py develop --uninstall
+.PHONY: tests
+tests: ## runs all tests [DEV]
+	# running unit tests
+	@$(VENV_DIR)/bin/pytest -vv -x --ff --pdb $(CURDIR)/tests/unit
+	# running integration tests
+	## @$(VENV_DIR)/bin/pytest -vv -x --ff --pdb $(CURDIR)/tests/integration
 
 
-## -------------------------------
-# Testing.
-
-.PHONY: test
-# target: test – Runs unit tests [w/ fail fast]
-test:{#
-	#@$(PYTHON) setup.py pytest --addopts tests/unit
-	#"$(VENV_DIR)/bin/pytest" -x --log-level=warning tests/unit
-#}
-	"pytest" -x --log-level=warning tests/unit
+.PHONY: requirements
+requirements: ## compiles pip requirements (.in -> .txt)
+	@$(MAKE) -C requirements all
 
 
+.PHONY: build
+build: ## builds docker image (using main services/docker-compose-build.yml)
+	@$(MAKE) -C ${ROOT_DIR} target=${APP_NAME} build
 
-## -------------------------------
-# Auxiliary targets.
-
-.PHONY: help
-# target: help – Display all callable targets
-help:
-	@echo "$(PACKAGE_NAME):$(PACKAGE_VERSION)"
-	@echo
-	@egrep "^\s*#\s*target\s*:\s*" [Mm]akefile \
-	| $(SED) -r "s/^\s*#\s*target\s*:\s*//g"
-	@echo
-
-
-## -------------------------------
-# Cleaners.
 
 .PHONY: clean
-# target: clean – Clean the project's directory
-clean:
-	@find "$(CURDIR)" \
-		-name "*.py[cod]" -exec rm -fv {} + -o \
-		-name __pycache__ -exec rm -rfv {} +
-	@rm -rfv \
-		"$(CURDIR)/.cache" \
-		"$(CURDIR)/.mypy_cache" \
-		"$(CURDIR)/.pytest_cache"
+clean: ## cleans all unversioned files in project and temp files create by this makefile
+	# Cleaning unversioned
+	@git clean -ndxf -e .vscode/
+	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+	@echo -n "$(shell whoami), are you REALLY sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+	@git clean -dxf -e .vscode/
+
+
+.PHONY: help
+# thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
+help: ## this colorful help
+	@echo "Recipes for '${APP_NAME}':"
+	@echo ""
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@echo ""
