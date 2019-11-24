@@ -128,3 +128,6 @@ tmp/
 
 # vscode configuration
 .vscode
+
+# makefile empty target files
+play
