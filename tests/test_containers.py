@@ -3,17 +3,14 @@
 # pylint:disable=redefined-outer-name
 
 import logging
-import os
 import shutil
 import subprocess
-import sys
-from contextlib import contextmanager
 from pathlib import Path
 from typing import Tuple
 
 import pytest
 
-from _utils import inside_dir
+from .utils import inside_dir
 
 PROJECT_SLUG = "myservice"
 
