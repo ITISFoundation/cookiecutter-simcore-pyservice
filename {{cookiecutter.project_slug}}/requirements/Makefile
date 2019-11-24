@@ -1,4 +1,4 @@
-.PHONY: all check clean
+.PHONY: all check clean help
 
 objects = $(wildcard *.in)
 outputs := $(objects:.in=.txt)
@@ -9,7 +9,7 @@ all: $(outputs)
 %.txt: %.in
 	pip-compile --output-file $@ $<
 
-ci.txt: base.txt
+_test.txt: _base.txt
 
 # target: check – Checks whether pip-compile is installed
 check:
@@ -17,4 +17,11 @@ check:
 
 # target: clean – Cleans all requirements/*.txt
 clean: check
-	- rm *.txt
+	- rm $(outputs)
+
+# target: help – Display all callable targets
+help:
+	@echo
+	@egrep "^\s*#\s*target\s*:\s*" [Mm]akefile \
+	| sed -r "s/^\s*#\s*target\s*:\s*//g"
+	@echo

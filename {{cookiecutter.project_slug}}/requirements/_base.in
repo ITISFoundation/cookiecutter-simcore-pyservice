@@ -1,7 +1,10 @@
-# Base dependencies
+#
+# Specifies third-party dependencies for 'services/{{ cookiecutter.project_slug }}/src'
+#
+# NOTE: ALL version constraints MUST be commented
 
 aiohttp
-aiohttp-swagger   # Swagger API Documentation builder for aiohttp server.
+aiohttp-swagger  
 trafaret
 trafaret-config
 tenacity
