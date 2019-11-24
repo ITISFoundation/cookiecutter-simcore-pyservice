@@ -1,5 +1,3 @@
-# pylint:disable=wildcard-import
-# pylint:disable=unused-import
 # pylint:disable=unused-variable
 # pylint:disable=unused-argument
 # pylint:disable=redefined-outer-name
@@ -9,40 +7,14 @@ import os
 import shutil
 import subprocess
 import sys
-from contextlib import contextmanager
 from pathlib import Path
 
 import pytest
 
+from .utils import inside_dir
+
 logger = logging.getLogger(__name__)
-
-@pytest.fixture
-def here():
-    return Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
-
-@pytest.fixture
-def pylintrc(here):
-    path = here.parent / ".pylintrc"
-    assert path.exists()
-    return path
-
-
-@contextmanager
-def inside_dir(dirpath):
-    """
-    Execute code from inside the given directory
-    :param dirpath: String, path of the directory the command is being run.
-    """
-    old_path = os.getcwd()
-    try:
-        logger.info("CWD now '%s'", dirpath)
-        os.chdir(dirpath)
-        yield
-    finally:
-        logger.info("CWD now '%s'", old_path)
-        os.chdir(old_path)
-
-
+current_dir = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve().parent
 
 
 def test_project_tree(cookies):
@@ -52,11 +24,6 @@ def test_project_tree(cookies):
     assert result.project.basename == 'test_project'
     assert result.project.isdir()
 
-# TODO: activate flake8 together with pylint. Need a config file first...
-#def test_run_flake8(cookies):
-#    result = cookies.bake(extra_context={'project_slug': 'flake8_compat'})
-#    with inside_dir(str(result.project)):
-#        assert subprocess.check_call(['flake8']) == 0
 
 # TODO: use pylint via package instead of application entrypoint
 def test_run_pylint(cookies, pylintrc):
@@ -79,6 +46,7 @@ def test_no_tags(cookies):
                         assert "TODO" not in line, "{}:{}".format(fpath, lineno)
         # skips
         dirs[:] = [n for n in dirs if not n.startswith('.')]
+
 
 def test_run_tests(cookies):
     result = cookies.bake(extra_context={'project_slug': 'dummy-project'})

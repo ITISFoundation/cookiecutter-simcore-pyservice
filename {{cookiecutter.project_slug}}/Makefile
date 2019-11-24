@@ -23,15 +23,15 @@ devenv: ## build development environment (using main services/docker-compose-bui
 .PHONY: install
 install: ## install app in edit mode for development [DEV]
 	# installing in edit mode
-	@$(VENV_DIR)/bin/pip3 install -r requirements/dev.txt
+	pip3 install -r requirements/dev.txt
 
 
 .PHONY: tests
 tests: ## runs all tests [DEV]
 	# running unit tests
-	@$(VENV_DIR)/bin/pytest -vv -x --ff --pdb $(CURDIR)/tests/unit
+	pytest -vv -x --ff --pdb $(CURDIR)/tests/unit
 	# running integration tests
-	## @$(VENV_DIR)/bin/pytest -vv -x --ff --pdb $(CURDIR)/tests/integration
+	## pytest -vv -x --ff --pdb $(CURDIR)/tests/integration
 
 
 .PHONY: requirements
