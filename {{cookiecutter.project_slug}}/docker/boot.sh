@@ -1,14 +1,15 @@
 #!/bin/sh
 #
+INFO="INFO: [`basename "$0"`] "
+ERROR="ERROR: [`basename "$0"`] "
 
 # BOOTING application ---------------------------------------------
-echo "Booting in ${SC_BOOT_MODE} mode ..."
-echo "  User    :`id $(whoami)`"
-echo "  Workdir :`pwd`"
-
+echo $INFO "Booting in ${SC_BOOT_MODE} mode ..."
 
 if [[ ${SC_BUILD_TARGET} == "development" ]]
 then
+  echo "  User    :`id $(whoami)`"
+  echo "  Workdir :`pwd`"
   echo "  Environment :"
   printenv  | sed 's/=/: /' | sed 's/^/    /' | sort
   #--------------------
@@ -34,8 +35,8 @@ fi
 # RUNNING application ----------------------------------------
 if [[ ${BOOT_MODE} == "debug" ]]
 then
-  echo "Debugger attached: https://docs.python.org/3.6/library/pdb.html#debugger-commands  ..."
-  echo "Running: import pdb, {{ cookiecutter.package_name }}.cli; pdb.run('{{ cookiecutter.package_name }}.cli.main([\'-c\',\'${APP_CONFIG}\'])')"
+  echo $INFO "Debugger attached: https://docs.python.org/3.6/library/pdb.html#debugger-commands  ..."
+  echo $INFO "Running: import pdb, {{ cookiecutter.package_name }}.cli; pdb.run('{{ cookiecutter.package_name }}.cli.main([\'-c\',\'${APP_CONFIG}\'])')"
   python -c "import pdb, {{ cookiecutter.package_name }}.cli; \
              pdb.run('{{ cookiecutter.package_name }}.cli.main([\'-c\',\'${APP_CONFIG}\'])')"
 
