@@ -1,80 +1,111 @@
-# Makefile config
-.DEFAULT_GOAL := help
+#
+# CONVENTIONS:
+#
+# - targets shall be ordered such that help list rensembles a typical workflow, e.g. 'make devenv tests'
+# - add doc to relevant targets
+# - internal targets shall start with '.'
+# - KISS
+#
 SHELL = /bin/bash
+.DEFAULT_GOAL := help
 
-# Custom variables
-VENV_DIR = $(CURDIR)/.venv
-OUTPUT_DIR = $(CURDIR)/output
+OUTPUT_DIR = $(CURDIR)/.output
 TEMPLATE = $(CURDIR)
 
-
-
-$(VENV_DIR):
-	# intalling virtual env
-	@python3 -m venv $@
-	# updating to latest pip
-	@$@/bin/pip3 install --upgrade pip wheel setuptools
-	@echo "To activate the virtual environment, execute 'source $(notdir $@)/bin/activate'"
-
-
-requirements.txt: requirements.in ## Pip compile requirements.in
-	# compiling requirements
-	@pip-compile -v --output-file requirements.txt $<
-
-
+#-----------------------------------
 .PHONY: devenv
-devenv: requirements.txt $(VENV_DIR) ## installs all tooling to run and test current cookie-cutter
-	# installing development environment
-	@$(VENV_DIR)/bin/pip install -r $<
+.venv:
+	python3 -m venv $@
+	# upgrading package managers
+	$@/bin/pip3 install --upgrade \
+		pip \
+		wheel \
+		setuptools
+	# tooling
+	$@/bin/pip3 install pip-tools
 
+requirements.txt: requirements.in
+	# freezes requirements
+	.venv/bin/pip-compile -v --output-file $@ $<
+
+devenv: .venv requirements.txt ## create a python virtual environment with tools to dev, run and tests cookie-cutter
+	# installing extra tools
+	@$</bin/pip3 install -r  $(word 2,$^)
+	# your dev environment contains
+	@$</bin/pip3 list
+	@echo "To activate the virtual environment, run 'source $</bin/activate'"
+
+
+.PHONY: tests
+tests: ## tests backed cookie
+	@pytest -vv \
+		--exitfirst \
+		--failed-first \
+		--durations=0 \
+		--pdb \
+		$(CURDIR)/tests
+
+
+#-----------------------------------
+.PHONY: play
 
 $(OUTPUT_DIR):
-	@mkdir -p $(OUTPUT_DIR)/packages
-	@mkdir -p $(OUTPUT_DIR)/services
-	$(VENV_DIR)/bin/cookiecutter --output-dir "$(OUTPUT_DIR)/services" "$(TEMPLATE)"
+	# creating $@
+	@mkdir -p $@
+
+define cookiecutterrc =
+$(shell find $(OUTPUT_DIR) -name ".cookiecutterrc" 2>/dev/null | tail -n 1 )
+endef
 
 
 play: $(OUTPUT_DIR) ## runs cookiecutter into output folder
-	@touch play
+ifeq (,$(cookiecutterrc))
+	# baking cookie $(TEMPLATE) onto $<
+	@cookiecutter --output-dir "$<" "$(TEMPLATE)"
+else
+	# replaying cookie-cutter using $(cookiecutterrc)
+	@cookiecutter --no-input -f \
+		--config-file="$(cookiecutterrc)"  \
+		--output-dir="$<" "$(TEMPLATE)"
+endif
+	@echo "To see generated code, lauch 'code $(wildcard $(OUTPUT_DIR)/*)'"
 
 
-.PHONY: replay
-replay: play ## replays cookiecutter in output directory
-	@$(VENV_DIR)/bin/cookiecutter \
-			--no-input -f \
-			--config-file="$(shell find $(OUTPUT_DIR) -name ".cookiecutterrc" | tail -n 1)"  \
-			--output-dir="$(OUTPUT_DIR)/services" "$(TEMPLATE)"
+
+.PHONY: version-patch version-minor version-major
+
+define _bumpversion
+	# upgrades as $(subst version-,,$@) version, commits and tags
+	@bump2version --verbose --list $(subst version-,,$@)
+endef
+
+version-patch: ## commits version with bug fixes not affecting the cookiecuter config
+	$(_bumpversion)
+version-minor: ## commits version with backwards-compatible API addition or changes (i.e. can replay)
+	$(_bumpversion)
+version-major: ## commits version with backwards-INcompatible addition or changes
+	$(_bumpversion)
 
 
-.PHONY: test
-test: ## tests backed cookie
-	@$(VENV_DIR)/bin/pytest -s -c $(CURDIR)/pytest.ini
-
-
+#-----------------------------------
 .PHONY: help
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help: ## this colorful help
-	@echo "Targets order display the common workflow:"
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@echo "Recipes for '$(notdir $(CURDIR))':"
+	@echo ""
+	@awk --posix 'BEGIN {FS = ":.*?## "} /^[[:alpha:][:space:]_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@echo ""
 
-
+git_clean_args = -dxf -e .vscode/ -e *ignore* -e .venv
 
 .PHONY: clean clean-all
-clean: ## cleans projects directory (except venv)
-	# Cleaning outputs
+clean: ## cleans all unversioned files in project and temp files create by this makefile
+	# Cleaning unversioned
+	@git clean -n $(git_clean_args)
 	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
 	@echo -n "$(shell whoami), are you REALLY sure? [y/N] " && read ans && [ $${ans:-N} = y ]
-	# cleaning caches and compiled files
-	@find "$(CURDIR)" \
-		-name "*.py[cod]" -exec rm -fv {} + -o \
-		-name __pycache__ -exec rm -rfv {} +
-	@rm -rfv \
-		"$(CURDIR)/.cache" \
-		"$(CURDIR)/.mypy_cache" \
-		"$(CURDIR)/.pytest_cache"
-	# cleaning $(OUTPUT_DIR)
-	@rm -rf "$(OUTPUT_DIR)"
-	@rm play
+	@git clean $(git_clean_args)
 
-clean-all: clean ## cleas both projects and devenv
-	@rm -rf "$(VENV_DIR)"
+clean-all: clean ## hard clean including virtual environment
+	# removing .venv
+	-@rm -rf .venv

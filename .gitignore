@@ -115,7 +115,7 @@ venv.bak/
 
 # output folders
 build/
-output/
+.output/
 out/
 
 # temporary folders
@@ -128,6 +128,3 @@ tmp/
 
 # vscode configuration
 .vscode
-
-# makefile empty target files
-play
