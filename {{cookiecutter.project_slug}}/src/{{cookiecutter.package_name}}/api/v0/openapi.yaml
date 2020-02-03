@@ -1,0 +1,358 @@
+openapi: 3.0.0
+info:
+  title: simcore-service-webserver API
+  version: 0.2.1
+  description: API definition for simcore-service-webserver service
+  contact:
+    name: IT'IS Foundation
+    email: support@simcore.io
+  license:
+    name: MIT
+    url: 'https://github.com/ITISFoundation/osparc-simcore/blob/master/LICENSE'
+servers:
+  - description: API server
+    url: /v0
+  - description: Development server
+    url: 'http://{host}:{port}/{basePath}'
+    variables:
+      host:
+        default: localhost
+      port:
+        default: '8001'
+      basePath:
+        enum:
+          - v0
+        default: v0
+paths:
+  /:
+    get:
+      summary: Service health check
+      operationId: check_health
+      responses:
+        '200':
+          description: Service information
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      status:
+                        type: string
+                      api_version:
+                        type: string
+                      version:
+                        type: string
+                    example:
+                      name: simcore-director-service
+                      status: SERVICE_RUNNING
+                      api_version: 0.1.0-dev+NJuzzD9S
+                      version: 0.1.0-dev+N127Mfv9H
+                  error:
+                    nullable: true
+                    default: null
+        default:
+          description: Default http error response body
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                properties:
+                  data:
+                    nullable: true
+                    default: null
+                  error:
+                    type: object
+                    nullable: true
+                    properties:
+                      logs:
+                        description: log messages
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            level:
+                              description: log level
+                              type: string
+                              default: INFO
+                              enum:
+                                - DEBUG
+                                - WARNING
+                                - INFO
+                                - ERROR
+                            message:
+                              description: 'log message. If logger is USER, then it MUST be human readable'
+                              type: string
+                            logger:
+                              description: name of the logger receiving this message
+                              type: string
+                          required:
+                            - message
+                          example:
+                            message: 'Hi there, Mr user'
+                            level: INFO
+                            logger: user-logger
+                      errors:
+                        description: errors metadata
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - code
+                            - message
+                          properties:
+                            code:
+                              type: string
+                              description: Typically the name of the exception that produced it otherwise some known error code
+                            message:
+                              type: string
+                              description: Error message specific to this item
+                            resource:
+                              type: string
+                              description: API resource affected by this error
+                            field:
+                              type: string
+                              description: Specific field within the resource
+                      status:
+                        description: HTTP error code
+                        type: integer
+                    example:
+                      BadRequestError:
+                        logs:
+                          - message: Requested information is incomplete or malformed
+                            level: ERROR
+                          - message: Invalid email and password
+                            level: ERROR
+                            logger: USER
+                        errors:
+                          - code: InvalidEmail
+                            message: Email is malformed
+                            field: email
+                          - code: UnsavePassword
+                            message: Password is not secure
+                            field: pasword
+                        status: 400
+  '/check/{action}':
+    post:
+      summary: service test endpoint
+      operationId: check_action
+      parameters:
+        - in: path
+          required: true
+          name: action
+          schema:
+            type: string
+            default: echo
+            enum:
+              - fail
+              - echo
+        - in: query
+          name: data
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - path_value
+                - query_value
+                - body_value
+              properties:
+                path_value:
+                  type: string
+                query_value:
+                  type: string
+                body_value:
+                  type: object
+                  additionalProperties:
+                    type: string
+              example:
+                path_value: foo
+                query_value: bar
+                body_value:
+                  key1: value1
+                  key2: value2
+      responses:
+        '200':
+          description: Echoes response based on action
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                      - path_value
+                      - query_value
+                      - body_value
+                    properties:
+                      path_value:
+                        type: string
+                      query_value:
+                        type: string
+                      body_value:
+                        type: object
+                        additionalProperties:
+                          type: string
+                    example:
+                      path_value: foo
+                      query_value: bar
+                      body_value:
+                        key1: value1
+                        key2: value2
+                  error:
+                    nullable: true
+                    default: null
+        default:
+          description: Returns enveloped payload w/ or w/o data
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    required:
+                      - path_value
+                      - query_value
+                      - body_value
+                    properties:
+                      path_value:
+                        type: string
+                      query_value:
+                        type: string
+                      body_value:
+                        type: object
+                        additionalProperties:
+                          type: string
+                    example:
+                      path_value: foo
+                      query_value: bar
+                      body_value:
+                        key1: value1
+                        key2: value2
+                  error:
+                    nullable: true
+                    default: null
+  /config:
+    get:
+      summary: Front end runtime configuration
+      operationId: get_config
+      responses:
+        '200':
+          description: configuration details
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - data
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      invitation_required:
+                        type: boolean
+                    example:
+                      invitation_required: true
+                  error:
+                    nullable: true
+                    default: null
+        default:
+          description: Default http error response body
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - error
+                properties:
+                  data:
+                    nullable: true
+                    default: null
+                  error:
+                    type: object
+                    nullable: true
+                    properties:
+                      logs:
+                        description: log messages
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            level:
+                              description: log level
+                              type: string
+                              default: INFO
+                              enum:
+                                - DEBUG
+                                - WARNING
+                                - INFO
+                                - ERROR
+                            message:
+                              description: 'log message. If logger is USER, then it MUST be human readable'
+                              type: string
+                            logger:
+                              description: name of the logger receiving this message
+                              type: string
+                          required:
+                            - message
+                          example:
+                            message: 'Hi there, Mr user'
+                            level: INFO
+                            logger: user-logger
+                      errors:
+                        description: errors metadata
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - code
+                            - message
+                          properties:
+                            code:
+                              type: string
+                              description: Typically the name of the exception that produced it otherwise some known error code
+                            message:
+                              type: string
+                              description: Error message specific to this item
+                            resource:
+                              type: string
+                              description: API resource affected by this error
+                            field:
+                              type: string
+                              description: Specific field within the resource
+                      status:
+                        description: HTTP error code
+                        type: integer
+                    example:
+                      BadRequestError:
+                        logs:
+                          - message: Requested information is incomplete or malformed
+                            level: ERROR
+                          - message: Invalid email and password
+                            level: ERROR
+                            logger: USER
+                        errors:
+                          - code: InvalidEmail
+                            message: Email is malformed
+                            field: email
+                          - code: UnsavePassword
+                            message: Password is not secure
+                            field: pasword
+                        status: 400
