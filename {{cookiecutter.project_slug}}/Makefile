@@ -54,18 +54,25 @@ build: ## builds docker image (using main services/docker-compose-build.yml)
 	@$(MAKE) --directory ${REPO_BASE_DIR} target=${APP_NAME} $@
 
 
-.PHONY: version-patch version-minor
-version-patch version-minor: ## commits version as patch (bug fixes not affecting the API), minor/minor (backwards-compatible/INcompatible API addition or changes)
+define _bumpversion
 	# upgrades as $(subst version-,,$@) version, commits and tags
 	@bump2version --verbose --list $(subst version-,,$@)
+endef
+
+version-patch: ## commits version with bug fixes not affecting the cookiecuter config
+	$(_bumpversion)
+version-minor: ## commits version with backwards-compatible API addition or changes (i.e. can replay)
+	$(_bumpversion)
+version-major: ## commits version with backwards-INcompatible addition or changes
+	$(_bumpversion)
 
 
 .PHONY: info
-info: ## displays
+info: ## displays information
 	# installed
 	@pip list
 	# version
-	@cat setup.py | grep version=
+	@cat VERSION
 
 
 .PHONY: clean clean-all
@@ -79,10 +86,11 @@ clean: ## cleans all unversioned files in project and temp files create by this 
 	@git clean $(git_clean_args)
 
 
+#-----------------------------------
 .PHONY: help
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help: ## this colorful help
-	@echo "Recipes for '${APP_NAME}':"
+	@echo "Recipes for '$(notdir $(CURDIR))':"
 	@echo ""
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@awk --posix 'BEGIN {FS = ":.*?## "} /^[[:alpha:][:space:]_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 	@echo ""
