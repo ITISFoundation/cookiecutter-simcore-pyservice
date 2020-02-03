@@ -96,9 +96,11 @@ help: ## this colorful help
 	@awk --posix 'BEGIN {FS = ":.*?## "} /^[[:alpha:][:space:]_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 	@echo ""
 
-git_clean_args = -dxf -e .vscode/ -e *ignore* -e .venv
+
 
 .PHONY: clean clean-all
+git_clean_args = -dxf -e .vscode/ -e *ignore* -e .venv
+
 clean: ## cleans all unversioned files in project and temp files create by this makefile
 	# Cleaning unversioned
 	@git clean -n $(git_clean_args)
