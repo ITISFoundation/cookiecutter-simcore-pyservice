@@ -9,48 +9,74 @@ SHELL = /bin/bash
 # Custom variables
 APP_NAME     := $(notdir $(CURDIR))
 APP_CLI_NAME := {{ cookiecutter.command_line_interface_bin_name }}
-APP_VERSION  = $(shell cat VERSION)
+APP_VERSION   = $(shell cat VERSION)
 
-ROOT_DIR     = $(abspath $(CURDIR)/../../)
-VENV_DIR    ?= $(abspath $(ROOT_DIR)/.venv)
+REPO_BASE_DIR  = $(abspath $(CURDIR)/../../)
+VENV_DIR      ?= $(abspath $(REPO_BASE_DIR)/.venv)
 
 
 .PHONY: devenv
 devenv: ## build development environment (using main services/docker-compose-build.yml)
-	@$(MAKE) -C ${ROOT_DIR} $@
+	@$(MAKE) --directory ${REPO_BASE_DIR} $@
 
 
-.PHONY: install
-install: ## install app in edit mode for development [DEV]
-	# installing in edit mode
-	pip3 install -r requirements/dev.txt
-
-
-.PHONY: tests
-tests: ## runs all tests [DEV]
-	# running unit tests
-	pytest -vv -x --ff --pdb $(CURDIR)/tests/unit
-	# running integration tests
-	## pytest -vv -x --ff --pdb $(CURDIR)/tests/integration
+.PHONY: openapi-specs
+openapi-specs: ## updates and validates openapi specifications
+	@$(MAKE) --directory $(CURDIR)/src/simcore_service_${APP_NAME}/api $@
 
 
 .PHONY: requirements
 requirements: ## compiles pip requirements (.in -> .txt)
-	@$(MAKE) -C requirements all
+	@$(MAKE) --directory requirements all
+
+
+.PHONY: install-dev install-prod install-ci
+install-dev install-prod install-ci: openapi-specs ## install app in development/production or CI mode
+	# installing in $(subst install-,,$@) mode
+	@$(VENV_DIR)/bin/pip3 install -r requirements/$(subst install-,,$@).txt
+
+
+PHONY: tests-unit tests-integration
+tests-unit: ## runs unit tests
+	# running unit tests
+	@pytest -vv --exitfirst --failed-first --durations=10 --pdb $(CURDIR)/tests/unit
+
+
+tests-integration: ## runs integration tests against local+production images
+	# running integration tests local/(service):production images ...
+	@export DOCKER_REGISTRY=local; \
+	export DOCKER_IMAGE_TAG=production; \
+	pytest -vv --exitfirst --failed-first --durations=10 --pdb $(CURDIR)/tests/integration
 
 
 .PHONY: build
 build: ## builds docker image (using main services/docker-compose-build.yml)
-	@$(MAKE) -C ${ROOT_DIR} target=${APP_NAME} build
+	@$(MAKE) --directory ${REPO_BASE_DIR} target=${APP_NAME} $@
 
 
-.PHONY: clean
+.PHONY: version-patch version-minor
+version-patch version-minor: ## commits version as patch (bug fixes not affecting the API), minor/minor (backwards-compatible/INcompatible API addition or changes)
+	# upgrades as $(subst version-,,$@) version, commits and tags
+	@bump2version --verbose --list $(subst version-,,$@)
+
+
+.PHONY: info
+info: ## displays
+	# installed
+	@pip list
+	# version
+	@cat setup.py | grep version=
+
+
+.PHONY: clean clean-all
+git_clean_args = -dxf -e .vscode
+
 clean: ## cleans all unversioned files in project and temp files create by this makefile
 	# Cleaning unversioned
-	@git clean -ndxf -e .vscode/
+	@git clean -n $(git_clean_args)
 	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
 	@echo -n "$(shell whoami), are you REALLY sure? [y/N] " && read ans && [ $${ans:-N} = y ]
-	@git clean -dxf -e .vscode/
+	@git clean $(git_clean_args)
 
 
 .PHONY: help
