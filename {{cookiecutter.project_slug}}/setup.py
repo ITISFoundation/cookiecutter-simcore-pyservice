@@ -19,11 +19,11 @@ def read_reqs( reqs_path: Path):
 readme = (current_dir/'README.md').read_text()
 version = (current_dir/"VERSION").read_text().strip()
 
-install_requirements = read_reqs( current_dir / "requirements" / "base.in" ) + [
+install_requirements = read_reqs( current_dir / "requirements" / "_base.txt" ) + [
     'simcore-service-library~=0.1'
 ]
 
-test_requirements = read_reqs( current_dir / "requirements" / "test.in" )
+test_requirements = read_reqs( current_dir / "requirements" / "_test.txt" )
 
 
 setup(
@@ -40,7 +40,7 @@ setup(
     long_description=readme,
     license="MIT license",
     python_requires='~=3.6',
-    packages=find_packages(wcurrent_dir='src'),
+    packages=find_packages(where='src'),
     package_dir={
         '': 'src',
     },
