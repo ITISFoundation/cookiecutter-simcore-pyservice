@@ -4,7 +4,9 @@
 # NOTE: ALL version constraints MUST be commented
 
 aiohttp
-aiohttp-swagger  
+{%- if cookiecutter.enable_aiohttp_swagger == 'true' %}
+aiohttp-swagger
+{%- endif %}
 trafaret
 trafaret-config
 tenacity
