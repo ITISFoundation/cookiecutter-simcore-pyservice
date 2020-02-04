@@ -17,7 +17,6 @@
 
 ## Checklist
 
-- [ ] I think the code is well written
-- [ ] Unit tests for the changes exist
 - [ ] Documentation reflects the changes
-- [ ] If you design a new module, add your user to .github/CODEOWNERS
+- [ ] Unit tests for the changes exist
+- [ ] Increased version (see ``make help``) ?
