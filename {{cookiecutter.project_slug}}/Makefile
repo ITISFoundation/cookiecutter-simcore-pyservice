@@ -22,7 +22,7 @@ devenv: ## build development environment (using main services/docker-compose-bui
 
 .PHONY: openapi-specs
 openapi-specs: ## updates and validates openapi specifications
-	@$(MAKE) --directory $(CURDIR)/src/simcore_service_${APP_NAME}/api $@
+	@$(MAKE) --directory $(CURDIR)/src/{{ cookiecutter.package_name }}/api $@
 
 
 .PHONY: requirements

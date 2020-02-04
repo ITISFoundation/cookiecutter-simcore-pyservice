@@ -55,7 +55,7 @@ def test_run_tests(cookies):
         "ls -la .",
         "pip install pip-tools",
         "make requirements",
-        "make install",
+        "make install-ci",
         "make test"
     )
     with inside_dir(working_dir):
