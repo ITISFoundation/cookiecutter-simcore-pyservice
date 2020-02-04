@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 import os
 import re
+from pathlib import Path
+
+
+# When the hook scripts script are run, their current working directory is the root of the generated project
+project_dir = Path(os.getcwd()).resolve()
 
 
 def fix_template_expansion(content, replacements):
@@ -41,14 +46,21 @@ def set_file_content(file, content):
     return nchar_written
 
 
-# format title of the generated readme file
-readme = os.getcwd() + '/README.md'
-if (os.path.exists(readme)):
-    title_underliner = ''.center(len('{{cookiecutter.project_name}}'), '=')
-    set_file_content(
-        readme,
-        re.sub(
-            r'^=+$', title_underliner, get_file_content(readme), 1, flags=re.M
+
+def format_title_in_readme():
+    """
+        format title of the generated readme file
+    """
+    readme = os.getcwd() + '/README.md'
+    if (os.path.exists(readme)):
+        title_underliner = ''.center(len('{{cookiecutter.project_name}}'), '=')
+        set_file_content(
+            readme,
+            re.sub(
+                r'^=+$', title_underliner, get_file_content(readme), 1, flags=re.M
+            )
         )
-    )
-# end format title of the generated readme file
+
+
+if __name__ == "__main__":
+    format_title_in_readme()
