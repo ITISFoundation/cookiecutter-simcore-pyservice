@@ -67,6 +67,16 @@ version-major: ## commits version with backwards-INcompatible addition or change
 	$(_bumpversion)
 
 
+.PHONY: replay
+
+replay: .cookiecutterrc ## re-applies cookiecutter
+	# Replaying {{ cookiecutter._template }} ...
+	@cookiecutter --no-input --overwrite-if-exists \
+		--config-file=$< \
+		--output-dir="$(abspath $(CURDIR)/..)" \
+		"{{ cookiecutter._template }}"
+
+
 .PHONY: info
 info: ## displays information
 	# installed
