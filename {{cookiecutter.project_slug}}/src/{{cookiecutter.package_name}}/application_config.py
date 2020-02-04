@@ -8,12 +8,12 @@
     depends on the subsystem and not the other way around.
 
     The app configuration is created before the application instance exists.
- 
+
 {# TODO: can this be done using declarative programming?? #}
 {# TODO: add more strict checks with re #}
 {# TODO: add support for versioning.
     - check shema fits version
-    - parse/format version in schema 
+    - parse/format version in schema
 #}
 """
 import logging
@@ -52,9 +52,6 @@ def create_schema():
     return schema
 
 
- # app[APP_CONFIG_KEY] = key for config object
-APP_CONFIG_KEY = APP_CONFIG_KEY
-
 # config/${CLI_DEFAULT_CONFIGFILE}
 CLI_DEFAULT_CONFIGFILE = 'config-container-prod.yml'
 
@@ -63,3 +60,8 @@ app_schema = create_schema()
 
 assert resources.exists( 'config/' + CLI_DEFAULT_CONFIGFILE ), \
         "'config/%s' does not exist" % CLI_DEFAULT_CONFIGFILE
+
+
+__all__ = [
+    'APP_CONFIG_KEY'
+]
