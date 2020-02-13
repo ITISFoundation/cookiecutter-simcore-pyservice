@@ -23,7 +23,7 @@ def pylintrc(project_slug_dir, osparc_simcore_root_dir):
 
 {# TODO: check pytst-pylint and replace this test #}
 def test_run_pylint(pylintrc, package_dir):
-    cmd = 'pylint -j 2 --rcfile {} -v {}'.format(pylintrc, package_dir)
+    cmd = 'pylint --jobs 0 --rcfile {} -v {}'.format(pylintrc, package_dir)
     assert subprocess.check_call(cmd.split()) == 0
 
 def test_main(here): # pylint: disable=unused-variable

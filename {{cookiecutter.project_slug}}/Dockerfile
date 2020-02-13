@@ -34,12 +34,14 @@ EXPOSE 8080
 FROM base as build
 
 ENV SC_BUILD_TARGET build
-
-{# TODO: install and uninstall lists #}
+{# TODO: install and uninstall lists
+      postgresql-dev: postgres sdk
+      libc-dev: ujson, uvloop
+#}
 RUN apk add --no-cache \
-      # postgresql-dev \
-      # libc-dev \
-      # libffi-dev \
+      postgresql-dev \
+      libc-dev \
+      libffi-dev \
       gcc \
       git
 
@@ -55,7 +57,7 @@ COPY  services/{{ cookiecutter.project_slug }}/requirements/*.txt \
       services/{{ cookiecutter.project_slug }}/requirements/
 
 RUN $SC_PIP install \
-      -r services/{{ cookiecutter.project_slug }}/requirements/base.txt
+      -r services/{{ cookiecutter.project_slug }}/requirements/_base.txt
 
 
 # --------------------------Cache stage -------------------
@@ -131,7 +133,7 @@ ENV SC_BOOT_MODE development
 {# TODO: consider installing tooling in a separate virtualenv? #}
 {# TODO: really necesary??? #}
 WORKDIR /build
-{# RUN $SC_PIP install -r services/{{ cookiecutter.project_slug }}/requirements/ci.txt #}
+{# RUN $SC_PIP install -r services/{{ cookiecutter.project_slug }}/requirements/_ci.txt #}
 
 WORKDIR /devel
 VOLUME  /devel/packages
