@@ -53,7 +53,7 @@ def assert_command(command):
     )
     std_out, _ = pipes.communicate()
     if pipes.returncode != 0:
-        print(">>>>", std_out.decode("utf-8"))
+        print(f'>>>>\n{std_out.decode("utf-8")}\n<<<<')
         assert (
             False
         ), f"There was a problem running '{command}'\nPlease check your output"
