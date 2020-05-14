@@ -63,7 +63,11 @@ def test_run_pylint(cookies, pylintrc):
     result = cookies.bake(extra_context={'project_slug': 'pylint_compat', 'package_name': 'package_folder'})
     with inside_dir(str(result.project)):
         cmd = 'pylint --rcfile {} -v src/package_folder/'.format(pylintrc.absolute()).split()
-        assert subprocess.check_call(cmd) == 0
+        pipes = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        std_out, _ = pipes.communicate()
+        if pipes.returncode != 0:
+            print(std_out.decode("utf-8"))
+            assert False, "Pylint failed with error, check this test's stdout to fix it"
 
 
 def test_no_tags(cookies):
