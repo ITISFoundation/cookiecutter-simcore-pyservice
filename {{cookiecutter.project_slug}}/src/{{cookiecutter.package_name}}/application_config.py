@@ -53,8 +53,7 @@ def create_schema():
 
 
  # app[APP_CONFIG_KEY] = key for config object
- # pylint: disable=self-assigning-variable
-APP_CONFIG_KEY = APP_CONFIG_KEY
+APP_CONFIG_KEY = APP_CONFIG_KEY # pylint: disable=self-assigning-variable, bad-option-value
 
 # config/${CLI_DEFAULT_CONFIGFILE}
 CLI_DEFAULT_CONFIGFILE = 'config-container-prod.yml'
