@@ -43,6 +43,14 @@ def inside_dir(dirpath):
         os.chdir(old_path)
 
 
+def assert_command(command):
+    """If a command exits with a status code different from 0, the output will be printed"""
+    split_command = command.split(" ")
+    pipes = subprocess.Popen(split_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    std_out, _ = pipes.communicate()
+    if pipes.returncode != 0:
+        print(std_out.decode("utf-8"))
+        assert False, f"There was a problem running '{command}'\nPlease check your output"
 
 
 def test_project_tree(cookies):
@@ -56,18 +64,14 @@ def test_project_tree(cookies):
 #def test_run_flake8(cookies):
 #    result = cookies.bake(extra_context={'project_slug': 'flake8_compat'})
 #    with inside_dir(str(result.project)):
-#        assert subprocess.check_call(['flake8']) == 0
+#        assert_command('flake8')
 
 # TODO: use pylint via package instead of application entrypoint
 def test_run_pylint(cookies, pylintrc):
     result = cookies.bake(extra_context={'project_slug': 'pylint_compat', 'package_name': 'package_folder'})
     with inside_dir(str(result.project)):
-        cmd = 'pylint --rcfile {} -v src/package_folder/'.format(pylintrc.absolute()).split(" ")
-        pipes = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        std_out, _ = pipes.communicate()
-        if pipes.returncode != 0:
-            print(std_out.decode("utf-8"))
-            assert False, "Pylint failed with error, check this test's stdout to fix it"
+        cmd = 'pylint --rcfile {} -v src/package_folder/'.format(pylintrc.absolute())
+        assert_command(cmd)
 
 
 def test_no_tags(cookies):
@@ -97,7 +101,7 @@ def test_run_tests(cookies):
     with inside_dir(working_dir):
         for cmd in commands:
             logger.info("Running '%s' ...", cmd)
-            assert subprocess.check_call(cmd.split()) == 0
+            assert_command(cmd)
             logger.info("Done '%s' .", cmd)
 
 
@@ -125,7 +129,7 @@ def test_build_docker(cookies, tmpdir):
     with inside_dir(new_working_dir):
         for cmd in commands:
             logger.info("Running '%s' ...", cmd)
-            assert subprocess.check_call(cmd.split()) == 0
+            assert_command(cmd)
             logger.info("Done '%s' .", cmd)
 
 
