@@ -7,7 +7,7 @@ import trafaret as T
 
 from servicelib.application_keys import APP_OPENAPI_SPECS_KEY
 
-APP_OPENAPI_SPECS_KEY = APP_OPENAPI_SPECS_KEY    # pylint: disable=self-assigning-variable, bad-option-value
+APP_OPENAPI_SPECS_KEY = APP_OPENAPI_SPECS_KEY    # pylint: disable=self-assigning-variable,bad-option-value
 
 CONFIG_SECTION_NAME = 'rest'
 
