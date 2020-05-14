@@ -62,7 +62,7 @@ def test_project_tree(cookies):
 def test_run_pylint(cookies, pylintrc):
     result = cookies.bake(extra_context={'project_slug': 'pylint_compat', 'package_name': 'package_folder'})
     with inside_dir(str(result.project)):
-        cmd = 'pylint --rcfile {} -v src/package_folder/'.format(pylintrc.absolute()).split()
+        cmd = 'pylint --rcfile {} -v src/package_folder/'.format(pylintrc.absolute()).split(" ")
         pipes = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         std_out, _ = pipes.communicate()
         if pipes.returncode != 0:
