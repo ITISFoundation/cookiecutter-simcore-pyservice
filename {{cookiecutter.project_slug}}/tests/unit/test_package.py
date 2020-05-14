@@ -30,7 +30,7 @@ def test_run_pylint(pylintrc, package_dir):
     pipes = subprocess.Popen(split_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     std_out, _ = pipes.communicate()
     if pipes.returncode != 0:
-        print(f'>>>>\n{std_out.decode("utf-8")}\n<<<<')
+        print(f'>>>> Exit code "{pipes.returncode}"\n{std_out.decode("utf-8")}\n<<<<')
         assert False, "Pylint failed with error, check this test's stdout to fix it"
 
 def test_main(here): # pylint: disable=unused-variable
