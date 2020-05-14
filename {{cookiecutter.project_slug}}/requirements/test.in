@@ -7,7 +7,7 @@ pytest-cov
 pytest-runner
 
 # linting
-pylint~=2.2
+pylint
 
 # misc for fixtures
 openapi_spec_validator
