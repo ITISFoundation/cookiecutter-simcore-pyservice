@@ -25,8 +25,13 @@ def pylintrc(project_slug_dir, osparc_simcore_root_dir):
 
 {# TODO: check pytst-pylint and replace this test #}
 def test_run_pylint(pylintrc, package_dir):
-    cmd = 'pylint -j 2 --rcfile {} -v {}'.format(pylintrc, package_dir)
-    assert subprocess.check_call(cmd.split()) == 0
+    command = 'pylint -j 2 --rcfile {} -v {}'.format(pylintrc, package_dir)
+    split_command = command.split(" ")
+    pipes = subprocess.Popen(split_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    std_out, _ = pipes.communicate()
+    if pipes.returncode != 0:
+        print(f'>>>> Exit code "{pipes.returncode}"\n{std_out.decode("utf-8")}\n<<<<')
+        assert False, "Pylint failed with error, check this test's stdout to fix it"
 
 def test_main(here): # pylint: disable=unused-variable
     """
